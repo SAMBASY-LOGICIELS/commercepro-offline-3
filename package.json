@@ -1,0 +1,70 @@
+{
+  "name": "commerce-pro-offline",
+  "version": "4.2.0",
+  "description": "Application de gestion commerciale hors ligne PC & Android — Samba Sy Logiciels",
+  "author": "Samba Sy Logiciels",
+  "license": "UNLICENSED",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist:win": "electron-builder --win --x64 --publish never",
+    "dist:dir": "electron-builder --win --x64 --dir --publish never",
+    "cap:add": "npx cap add android",
+    "cap:sync": "npx cap sync android",
+    "cap:open": "npx cap open android"
+  },
+  "build": {
+    "appId": "com.sambasylogiciels.commercepro",
+    "productName": "CommercePro Offline",
+    "copyright": "Samba Sy Logiciels",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "www/**/*",
+      "build/icon.ico"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "artifactName": "CommercePro-Offline-Installateur-${version}.${ext}",
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "CommercePro Offline",
+      "deleteAppDataOnUninstall": false
+    },
+    "portable": {
+      "artifactName": "CommercePro-Offline-Portable-${version}.${ext}"
+    }
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/cli": "^6.0.0",
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/filesystem": "^6.0.0",
+    "@capacitor/share": "^6.0.0",
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0"
+  }
+}

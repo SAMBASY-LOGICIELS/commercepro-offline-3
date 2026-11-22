@@ -1,0 +1,2571 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#1e3a8a" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src https://ntfy.sh; object-src 'none'; base-uri 'none'" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" href="./icon-192.png" />
+  <title>CommercePro Offline — Samba Sy Logiciels</title>
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-dark: #172554;
+      --primary-soft: #eff6ff;
+      --accent: #eab308;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --success: #15803d;
+      --warn: #b45309;
+      --danger: #b91c1c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding-bottom: 78px;
+    }
+
+    /* Icônes SVG inline */
+    .ico {
+      width: 17px;
+      height: 17px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+      vertical-align: middle;
+    }
+    .ico-lg { width: 20px; height: 20px; }
+
+    header {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      color: #fff;
+      padding: 8px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      gap: 10px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.16);
+    }
+    .brand-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+    .header-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: #fff;
+      border: 1px solid rgba(255,255,255,0.4);
+      flex-shrink: 0;
+    }
+    .pill {
+      font-size: 12px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.16);
+      font-weight: 600;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .app-shell {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      min-height: calc(100vh - 54px);
+    }
+    aside {
+      background: var(--card);
+      border-right: 1px solid var(--border);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .nav-btn {
+      width: 100%;
+      text-align: left;
+      padding: 10px 12px;
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 500;
+      cursor: pointer;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: background 0.15s, color 0.15s;
+    }
+    .nav-btn.active, .nav-btn:hover {
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    main { padding: 14px 16px; max-width: 1340px; width: 100%; }
+
+    /* Bandeau d'accueil compact avec la photo intégrée sans encombrer l'écran */
+    .welcome-strip {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--primary);
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .welcome-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .welcome-photo {
+      width: 58px;
+      height: 58px;
+      border-radius: 10px;
+      object-fit: cover;
+      border: 2px solid var(--primary);
+      box-shadow: 0 2px 6px rgba(30, 58, 138, 0.18);
+      flex-shrink: 0;
+    }
+    .welcome-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin: 0 0 2px 0;
+    }
+    .welcome-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin: 0;
+    }
+    .welcome-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+    .section-title {
+      margin: 0 0 12px 0;
+      font-size: 15.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary-dark);
+    }
+    .kpi-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .kpi-val { font-size: 18px; font-weight: 700; margin-top: 4px; }
+
+    .pos-grid {
+      display: grid;
+      grid-template-columns: 1.45fr 1.05fr;
+      gap: 14px;
+      align-items: start;
+    }
+    .prod-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .prod-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      background: #fff;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 6px;
+      transition: border-color 0.15s, transform 0.1s;
+    }
+    .prod-card:hover { border-color: var(--primary); background: #fafcff; transform: translateY(-1px); }
+    .price { font-weight: 700; color: var(--primary); font-size: 14px; }
+    .low { color: var(--danger); font-size: 12px; font-weight: 600; }
+    .ok { color: var(--success); font-size: 12px; font-weight: 600; }
+    .warn { color: var(--warn); font-size: 12px; font-weight: 600; }
+
+    input, select, textarea {
+      padding: 9px 11px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      font-size: 13.5px;
+      font-family: inherit;
+      background: #fff;
+    }
+    button.btn, label.btn-file {
+      padding: 9px 13px;
+      border-radius: 8px;
+      border: none;
+      font-size: 13.5px;
+      font-family: inherit;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      text-decoration: none;
+    }
+    button.btn:hover, label.btn-file:hover { opacity: 0.93; }
+    button.btn-sm, label.btn-sm {
+      padding: 6px 10px;
+      font-size: 12px;
+      border-radius: 6px;
+      border: none;
+      background: #e2e8f0;
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+    button.btn-sm:hover, label.btn-sm:hover { background: #cbd5e1; }
+    button.btn-success { background: var(--success); color: #fff; }
+    button.btn-warn { background: var(--warn); color: #fff; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { padding: 8px; border-bottom: 1px solid var(--border); text-align: left; }
+    .table-wrap { overflow-x: auto; }
+    .cart-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      gap: 8px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .field-group label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .payment-summary-box {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 10px 12px;
+      display: grid;
+      gap: 6px;
+    }
+    .sum-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+    .sum-row.total {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary);
+      border-bottom: 1px dashed #cbd5e1;
+      padding-bottom: 6px;
+    }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .status-paid { background: #dcfce7; color: #166534; }
+    .status-advance { background: #fef3c7; color: #92400e; }
+    .status-unpaid { background: #fee2e2; color: #991b1b; }
+
+    .media-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 14px;
+      margin-top: 10px;
+    }
+    .media-box {
+      border: 1px dashed #94a3b8;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+      background: #f8fafc;
+    }
+    .media-preview {
+      width: 88px;
+      height: 88px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #fff;
+      display: block;
+      margin: 8px auto;
+    }
+
+    .bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      justify-content: space-around;
+      padding: 6px 0;
+      z-index: 30;
+    }
+    .bottom-nav button {
+      background: none;
+      border: none;
+      font-size: 11px;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 4px 5px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+    .bottom-nav button.active { color: var(--primary); font-weight: 700; }
+
+    /* Modale Facture / Reçu */
+    #receiptModal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,0.65);
+      z-index: 60;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+    }
+    #receiptBox {
+      background: #fff;
+      color: #000;
+      padding: 24px;
+      border-radius: 10px;
+      max-width: 780px;
+      width: 100%;
+      max-height: 92vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    }
+    .inv-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      border-bottom: 2px solid #1e3a8a;
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+    }
+    .inv-company {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      flex: 1;
+    }
+    .inv-logo {
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 3px;
+    }
+    .inv-owner-photo {
+      width: 72px;
+      height: 72px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2px solid #1e3a8a;
+    }
+    .inv-big-title {
+      text-align: center;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: #1e3a8a;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin: 10px 0 14px 0;
+    }
+    .inv-meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 14px;
+      font-size: 13px;
+    }
+    .inv-meta-card {
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 10px;
+      background: #f8fafc;
+    }
+    .inv-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 14px;
+      font-size: 13px;
+    }
+    .inv-table th {
+      background: #1e3a8a;
+      color: #fff;
+      padding: 8px;
+      border: 1px solid #1e3a8a;
+      text-align: left;
+    }
+    .inv-table td {
+      padding: 8px;
+      border: 1px solid #cbd5e1;
+    }
+    .inv-table th.num, .inv-table td.num { text-align: right; }
+    .inv-table th.center, .inv-table td.center { text-align: center; }
+    .inv-totals-wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .inv-totals-table {
+      width: 320px;
+      max-width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-left: auto;
+    }
+    .inv-totals-table td {
+      padding: 7px 10px;
+      border: 1px solid #cbd5e1;
+    }
+    .inv-totals-table tr.highlight td {
+      background: #eff6ff;
+      font-weight: 800;
+      font-size: 15px;
+      color: #1e3a8a;
+    }
+    .inv-signatures {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 28px;
+      padding-top: 10px;
+      font-size: 13px;
+    }
+
+    /* Notifications et boîtes de dialogue internes (remplacent alert/confirm/prompt) */
+    #toastBox { position: fixed; bottom: 84px; right: 14px; z-index: 90; display: grid; gap: 8px; max-width: min(380px, calc(100vw - 28px)); }
+    .toast { background: #0f172a; color: #fff; padding: 10px 14px; border-radius: 8px; font-size: 13px; box-shadow: 0 6px 18px rgba(0,0,0,.25); border-left: 4px solid var(--accent); white-space: pre-line; }
+    .toast.ok { border-left-color: #22c55e; }
+    .toast.err { border-left-color: #ef4444; }
+    #dlgOverlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,.6); z-index: 80; align-items: center; justify-content: center; padding: 14px; }
+    #dlgBox { background: #fff; border-radius: 10px; padding: 18px; width: 100%; max-width: 400px; box-shadow: 0 20px 40px rgba(0,0,0,.3); }
+    #dlgMsg { margin: 0 0 12px 0; font-size: 14px; white-space: pre-line; }
+    #dlgInput { width: 100%; margin-bottom: 12px; }
+    #dlgBtns { display: flex; gap: 8px; justify-content: flex-end; }
+    .hint { font-size: 12px; color: var(--muted); margin: 8px 0 0 0; }
+
+    @media print {
+      body > *:not(#receiptModal) { display: none !important; }
+      #receiptModal {
+        position: static;
+        background: none;
+        padding: 0;
+        display: block !important;
+      }
+      .no-print { display: none !important; }
+      #receiptBox { box-shadow: none; max-width: 100%; max-height: none; overflow: visible; padding: 0; border-radius: 0; }
+      .inv-table tr, .inv-totals-wrap, .inv-signatures { page-break-inside: avoid; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+
+    @media (max-width: 768px) {
+      .app-shell { grid-template-columns: 1fr; }
+      aside { display: none; }
+      .bottom-nav { display: flex; }
+      .pos-grid { grid-template-columns: 1fr; }
+      .inv-header { flex-direction: column; }
+      .inv-meta-grid { grid-template-columns: 1fr; }
+      .welcome-photo { width: 48px; height: 48px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand-box">
+      <img id="headerLogoImg" class="header-logo" src="./brand-banner.jpg" alt="Logo" />
+      <div style="min-width:0;">
+        <strong id="shopHeaderName">Samba Sy Logiciels — CommercePro</strong>
+        <span id="shopHeaderMode" style="font-size:12px;opacity:.85;margin-left:6px;"></span>
+      </div>
+    </div>
+    <div id="netBadge" class="pill">
+      <svg class="ico" viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+      <span id="netBadgeText">Hors ligne</span>
+    </div>
+  </header>
+
+  <div class="app-shell">
+    <aside>
+      <button class="nav-btn active" data-tab="pos">
+        <svg class="ico" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        Caisse & Facturation
+      </button>
+      <button class="nav-btn" data-tab="catalog">
+        <svg class="ico" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        Catalogue & Stock
+      </button>
+      <button class="nav-btn" data-tab="customers">
+        <svg class="ico" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Clients, Avances & Dettes
+      </button>
+      <button class="nav-btn" data-tab="expenses">
+        <svg class="ico" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        Dépenses & Bilan
+      </button>
+      <button class="nav-btn" data-tab="history">
+        <svg class="ico" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Historique Factures
+      </button>
+      <button class="nav-btn" data-tab="settings">
+        <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Entreprise, Sync & Sauvegarde
+      </button>
+    </aside>
+
+    <main>
+      <!-- Bandeau d'accueil compact avec la photo intégrée -->
+      <div class="welcome-strip">
+        <div class="welcome-left">
+          <img id="homeWelcomePhoto" class="welcome-photo" src="./brand-banner.jpg" alt="Samba Sy Logiciels" />
+          <div>
+            <h2 class="welcome-title" id="welcomeTitle">Bienvenue sur CommercePro Offline</h2>
+            <p class="welcome-sub" id="welcomeSubtitle">Samba Sy Logiciels — La Rénovation Digitale · Gestion commerciale PC & Android</p>
+          </div>
+        </div>
+        <div class="welcome-actions">
+          <button class="btn-sm" onclick="switchTab('pos')">
+            <svg class="ico" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nouvelle vente
+          </button>
+          <button class="btn-sm" onclick="switchTab('catalog')">
+            <svg class="ico" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            Gérer stock
+          </button>
+          <button class="btn-sm" onclick="switchTab('settings')">
+            <svg class="ico" viewBox="0 0 24 24"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+            Sync PC / Mobile
+          </button>
+        </div>
+      </div>
+
+      <!-- KPIs -->
+      <div class="kpis">
+        <div class="card">
+          <div class="kpi-top">
+            <span>Chiffre d'affaires total</span>
+            <svg class="ico" style="color:var(--primary);" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          </div>
+          <div class="kpi-val" id="kpiCA">0</div>
+        </div>
+        <div class="card">
+          <div class="kpi-top">
+            <span>Total encaissé (Avances + Soldes)</span>
+            <svg class="ico" style="color:var(--success);" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <div class="kpi-val" id="kpiCollected" style="color:var(--success);">0</div>
+        </div>
+        <div class="card">
+          <div class="kpi-top">
+            <span>Dettes clients (Reste à payer)</span>
+            <svg class="ico" style="color:var(--danger);" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <div class="kpi-val" id="kpiCredits" style="color:var(--danger);">0</div>
+        </div>
+        <div class="card">
+          <div class="kpi-top">
+            <span>Bénéfice net estimé</span>
+            <svg class="ico" style="color:var(--primary);" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          </div>
+          <div class="kpi-val" id="kpiNetProfit">0</div>
+        </div>
+      </div>
+
+      <!-- 1. CAISSE & FACTURATION -->
+      <section id="tab-pos" class="pos-grid">
+        <div class="card">
+          <div style="display:flex;align-items:center;gap:10px;background:#f8fafc;border:1px solid #cbd5e1;border-left:4px solid var(--primary);border-radius:8px;padding:9px 12px;margin-bottom:10px;color:#0f172a;font-weight:600;font-size:13.5px;">
+            <svg class="ico ico-lg" style="color:var(--primary);" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            <span>Rechercher et ajouter un article pour la facture</span>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <input id="posSearch" type="search" placeholder="Rechercher article, SKU ou code-barres..." style="flex:1;min-width:170px;" />
+            <button class="btn-sm" onclick="loadDemoCatalog()">
+              <svg class="ico" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Charger démo
+            </button>
+          </div>
+          <div id="posProducts" class="prod-grid"></div>
+        </div>
+
+        <div class="card">
+          <h3 class="section-title">
+            <svg class="ico ico-lg" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            Panier & Règlement détaillé
+          </h3>
+          <div id="cartList"><p style="color:var(--muted);font-size:13px;">Panier vide. Cliquez sur un article à gauche.</p></div>
+
+          <div style="margin-top:12px;display:grid;gap:10px;">
+            <div class="form-grid" style="margin-bottom:0;">
+              <div class="field-group">
+                <label>
+                  <svg class="ico" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  Client
+                </label>
+                <select id="cartCustomer"><option value="">Client comptoir</option></select>
+              </div>
+              <div class="field-group">
+                <label>
+                  <svg class="ico" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  Type de document
+                </label>
+                <select id="docTypeSelect">
+                  <option value="FACTURE DE PAIEMENT">FACTURE DE PAIEMENT</option>
+                  <option value="REÇU DE PAIEMENT">REÇU DE PAIEMENT</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-grid" style="margin-bottom:0;">
+              <div class="field-group">
+                <label>
+                  <svg class="ico" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                  Mode de règlement
+                </label>
+                <select id="cartPayment">
+                  <option value="Espèces">Espèces</option>
+                  <option value="Mobile Money (Wave / OM)">Mobile Money (Wave / OM)</option>
+                  <option value="Virement / Chèque">Virement / Chèque</option>
+                  <option value="Crédit (Rien versé)">Crédit (Rien versé)</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label>
+                  <svg class="ico" viewBox="0 0 24 24"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
+                  Remise accordée
+                </label>
+                <input id="cartDiscount" type="number" min="0" step="any" value="0" oninput="renderCart()" />
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label>
+                <svg class="ico" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                Situation du versement client
+              </label>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                <select id="paymentScenario" style="flex:1;min-width:160px;" onchange="onScenarioChange()">
+                  <option value="full">Paiement intégral (Tout payé)</option>
+                  <option value="advance">Avance sur le montant (Paiement partiel)</option>
+                  <option value="none">Rien versé (Crédit total 0)</option>
+                </select>
+                <input id="cartPaid" type="number" min="0" step="any" placeholder="Montant versé" style="flex:1;min-width:130px;" oninput="onManualPaidInput()" />
+              </div>
+            </div>
+
+            <div class="payment-summary-box">
+              <div class="sum-row total">
+                <span>Total à payer :</span>
+                <span id="sumTotalToPay">0</span>
+              </div>
+              <div class="sum-row">
+                <span>Montant versé / Avance :</span>
+                <strong id="sumPaidAdvance" style="color:var(--success);">0</strong>
+              </div>
+              <div class="sum-row">
+                <span>Reste à payer (Dette) :</span>
+                <strong id="sumRemainingDebt" style="color:var(--danger);">0</strong>
+              </div>
+              <div class="sum-row">
+                <span>Monnaie à rendre :</span>
+                <strong id="sumChangeDue">0</strong>
+              </div>
+              <div style="margin-top:4px;">
+                Statut : <span id="sumStatusBadge" class="status-pill status-paid">PAYÉ INTÉGRALEMENT</span>
+              </div>
+            </div>
+
+            <button class="btn btn-success" onclick="validateSale()">
+              <svg class="ico" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              Valider & Éditer la Facture / Reçu
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. CATALOGUE & STOCK -->
+      <section id="tab-catalog" style="display:none;">
+        <div class="card">
+          <h3 class="section-title">
+            <svg class="ico ico-lg" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nouvel article / service
+          </h3>
+          <form id="productForm" class="form-grid">
+            <input id="prodName" type="text" placeholder="Désignation *" required />
+            <input id="prodSku" type="text" placeholder="Code-barres / SKU" />
+            <input id="prodUnit" type="text" placeholder="Unité (pièce, kg, sac...)" value="unité" />
+            <input id="prodBuy" type="number" min="0" step="any" placeholder="Prix achat *" required />
+            <input id="prodSell" type="number" min="0" step="any" placeholder="Prix vente *" required />
+            <input id="prodStock" type="number" min="0" step="any" placeholder="Stock initial *" required />
+            <input id="prodMin" type="number" min="0" step="any" placeholder="Seuil alerte" value="5" />
+            <button class="btn" type="submit">
+              <svg class="ico" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Ajouter l'article
+            </button>
+          </form>
+        </div>
+        <div class="card table-wrap">
+          <h3 class="section-title">
+            <svg class="ico ico-lg" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            État du stock
+          </h3>
+          <table>
+            <thead>
+              <tr><th>Article</th><th>Code</th><th>Achat</th><th>Vente</th><th>Stock</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="catalogBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 3. CLIENTS, AVANCES & DETTES -->
+      <section id="tab-customers" style="display:none;">
+        <div class="card">
+          <h3 class="section-title">
+            <svg class="ico ico-lg" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+            Ajouter un client
+          </h3>
+          <form id="customerForm" class="form-grid">
+            <input id="custName" type="text" placeholder="Nom complet ou entreprise *" required />
+            <input id="custPhone" type="text" placeholder="Téléphone" />
+            <input id="custAddress" type="text" placeholder="Adresse / Quartier" />
+            <select id="custType">
+              <option value="Particulier">Particulier</option>
+              <option value="Revendeur">Revendeur / Grossiste</option>
+              <option value="Entreprise">Entreprise</option>
+            </select>
+            <button class="btn" type="submit">
+              <svg class="ico" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              Enregistrer client
+            </button>
+          </form>
+        </div>
+        <div class="card table-wrap">
+          <h3 class="section-title">
+            <svg class="ico ico-lg" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+            Situation détaillée des dettes & avances clients
+          </h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Client</th>
+                <th>Téléphone / Adresse</th>
+                <th>Total facturé</th>
+                <th>Total versé / Avances</th>
+                <th>Dette restante</th>
+                <th>Règlement</th>
+              </tr>
+            </thead>
+            <tbody id="customersBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 4. DÉPENSES -->
+      <section id="tab-expenses" style="display:none;">
+        <div class="card">
+          <h3 class="section-title">
+            <svg class="ico ico-lg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            Enregistrer une dépense / charge
+          </h3>
+          <form id="expenseForm" class="form-grid">
+            <input id="expLabel" type="text" placeholder="Motif (loyer, transport, électricité...) *" required />
+            <input id="expAmount" type="number" min="0" step="any" placeholder="Montant *" required />
+            <select id="expAccount">
+              <option value="Espèces">Caisse espèces</option>
+              <option value="Mobile Money">Mobile Money</option>
+              <option value="Banque">Banque</option>
+            </select>
+            <button class="btn" type="submit">
+              <svg class="ico" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Ajouter dépense
+            </button>
+          </form>
+        </div>
+        <div class="card table-wrap">
+          <h3 class="section-title">
+            <svg class="ico ico-lg" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            Journal des dépenses
+          </h3>
+          <table>
+            <thead>
+              <tr><th>Date</th><th>Motif</th><th>Compte</th><th>Montant</th></tr>
+            </thead>
+            <tbody id="expensesBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 5. HISTORIQUE FACTURES -->
+      <section id="tab-history" class="card table-wrap" style="display:none;">
+        <h3 class="section-title">
+          <svg class="ico ico-lg" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Historique des factures & reçus
+        </h3>
+        <table>
+          <thead>
+            <tr>
+              <th>N° / Date</th>
+              <th>Client</th>
+              <th>Total à payer</th>
+              <th>Avance / Versé</th>
+              <th>Reste à payer</th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="salesBody"></tbody>
+        </table>
+        <p class="hint" id="salesHint"></p>
+      </section>
+
+      <!-- 6. PARAMÈTRES, IDENTITÉ VISUELLE & SYNCHRONISATION -->
+      <section id="tab-settings" style="display:none;">
+        <div class="card">
+          <h3 class="section-title">
+            <svg class="ico ico-lg" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            Identité de l'entreprise & du propriétaire (Accueil & Factures)
+          </h3>
+          <div class="form-grid">
+            <div class="field-group">
+              <label>Nom de l'entreprise / Boutique *</label>
+              <input id="cfgShopName" type="text" placeholder="Ex: Samba Sy Logiciels" />
+            </div>
+            <div class="field-group">
+              <label>Nom du propriétaire / Gérant</label>
+              <input id="cfgOwnerName" type="text" placeholder="Ex: M. Samba Sy" />
+            </div>
+            <div class="field-group">
+              <label>Activité / Slogan</label>
+              <input id="cfgTagline" type="text" placeholder="Ex: La Rénovation Digitale — Commerce Général" />
+            </div>
+            <div class="field-group">
+              <label>Téléphone(s)</label>
+              <input id="cfgPhone" type="text" placeholder="Ex: +221 77 000 00 00" />
+            </div>
+            <div class="field-group">
+              <label>Adresse complète</label>
+              <input id="cfgAddress" type="text" placeholder="Ex: Kaffrine, Sénégal" />
+            </div>
+            <div class="field-group">
+              <label>Email / Site web</label>
+              <input id="cfgEmail" type="text" placeholder="Ex: contact@sambasylogiciels.sn" />
+            </div>
+            <div class="field-group">
+              <label>NINEA / RC / NIF (optionnel)</label>
+              <input id="cfgTaxId" type="text" placeholder="Ex: NINEA 001234567" />
+            </div>
+            <div class="field-group">
+              <label>Devise & Profil</label>
+              <div style="display:flex;gap:6px;">
+                <input id="cfgCurrency" type="text" placeholder="FCFA" style="width:90px;" />
+                <select id="cfgMode" style="flex:1;">
+                  <option value="Commerce général">Commerce général</option>
+                  <option value="Grossiste / Semi-gros">Grossiste / Semi-gros</option>
+                  <option value="Quincaillerie / Matériaux">Quincaillerie / Matériaux</option>
+                  <option value="Services & Vente">Services & Vente</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="media-grid">
+            <div class="media-box">
+              <strong>Logo de l'entreprise</strong>
+              <img id="previewLogo" class="media-preview" src="./brand-banner.jpg" alt="Aperçu Logo" />
+              <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">
+                <label class="btn-sm">
+                  <svg class="ico" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                  Choisir Logo
+                  <input type="file" accept="image/*" style="display:none;" onchange="handleImageUpload(event, 'logoDataUrl')" />
+                </label>
+                <button class="btn-sm" type="button" onclick="resetDefaultImage('logoDataUrl')">
+                  <svg class="ico" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+                  Défaut
+                </button>
+              </div>
+            </div>
+
+            <div class="media-box">
+              <strong>Photo du propriétaire / Gérant</strong>
+              <img id="previewOwner" class="media-preview" src="./brand-banner.jpg" alt="Aperçu Photo" />
+              <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">
+                <label class="btn-sm">
+                  <svg class="ico" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                  Choisir Photo
+                  <input type="file" accept="image/*" style="display:none;" onchange="handleImageUpload(event, 'ownerPhotoDataUrl')" />
+                </label>
+                <button class="btn-sm" type="button" onclick="resetDefaultImage('ownerPhotoDataUrl')">
+                  <svg class="ico" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+                  Défaut
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:14px;">
+            <button class="btn" onclick="saveSettings()">
+              <svg class="ico" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              Enregistrer l'identité & les images
+            </button>
+          </div>
+        </div>
+
+        <!-- Synchronisation en ligne PC (.exe) <-> Téléphone (.apk) -->
+        <div class="card">
+          <h3 class="section-title">
+            <svg class="ico ico-lg" viewBox="0 0 24 24"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+            Synchronisation PC (.exe) ↔ Téléphone (.apk) via Internet
+          </h3>
+          <p style="font-size:13px;color:var(--muted);margin-top:0;">
+            Entrez le même <strong>Code de synchronisation secret</strong> sur votre PC et votre téléphone Android (ex. <code>SSL-KAFFRINE-2026</code>), puis envoyez ou récupérez les dernières situations dès qu'Internet est actif.
+          </p>
+          <div class="form-grid">
+            <div class="field-group">
+              <label>Code de synchronisation secret (commun PC & Mobile)</label>
+              <input id="cfgSyncRoom" type="text" placeholder="Ex: MON-COMMERCE-SECRET-2026" />
+            </div>
+            <div class="field-group">
+              <label>Mode de fusion à la réception</label>
+              <select id="syncMergeMode">
+                <option value="merge">Fusion intelligente (conserver + mettre à jour)</option>
+                <option value="replace">Remplacer complètement par la version reçue</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+            <button class="btn btn-success" onclick="pushCloudSync()">
+              <svg class="ico" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              1. Envoyer les dernières situations (Cloud)
+            </button>
+            <button class="btn" onclick="pullCloudSync()">
+              <svg class="ico" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              2. Récupérer les situations sur cet appareil
+            </button>
+            <button class="btn-sm" style="padding:9px 12px;" onclick="shareSyncSummary()">
+              <svg class="ico" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+              Partager rapport rapide
+            </button>
+          </div>
+          <div id="syncStatusMsg" style="margin-top:10px;font-size:13px;color:var(--muted);"></div>
+          <p class="hint">Les données sont chiffrées avec votre code avant l'envoi. Le serveur public ne les garde que quelques heures : récupérez-les rapidement sur l'autre appareil. Le logo et la photo ne sont pas synchronisés. Pour un transfert durable, utilisez la sauvegarde JSON ci-dessous.</p>
+        </div>
+
+        <!-- Sauvegarde locale JSON -->
+        <div class="card">
+          <h3 class="section-title">
+            <svg class="ico ico-lg" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Sauvegarde & Restauration locale (Fichier JSON)
+          </h3>
+          <p style="font-size:13px;color:var(--muted);">Fonctionne 100 % sans Internet (clé USB, Bluetooth, câble ou transfert de fichier).</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn" onclick="exportAllData()">
+              <svg class="ico" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Exporter sauvegarde (.json)
+            </button>
+            <label class="btn-sm" style="padding:9px 14px;font-size:13.5px;">
+              <svg class="ico" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Importer sauvegarde (.json)
+              <input type="file" accept=".json" style="display:none;" onchange="importAllData(event)" />
+            </label>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Barre mobile Android -->
+  <nav class="bottom-nav">
+    <button class="active" data-tab="pos">
+      <svg class="ico" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      Caisse
+    </button>
+    <button data-tab="catalog">
+      <svg class="ico" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      Stock
+    </button>
+    <button data-tab="customers">
+      <svg class="ico" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+      Clients
+    </button>
+    <button data-tab="history">
+      <svg class="ico" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Factures
+    </button>
+    <button data-tab="settings">
+      <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Réglages
+    </button>
+  </nav>
+
+  <div id="toastBox" class="no-print" aria-live="polite"></div>
+  <div id="dlgOverlay" class="no-print" role="dialog" aria-modal="true">
+    <div id="dlgBox">
+      <p id="dlgMsg"></p>
+      <input id="dlgInput" type="number" min="0" step="any" style="display:none;" />
+      <div id="dlgBtns">
+        <button class="btn-sm" id="dlgCancel" type="button" style="padding:9px 14px;">Annuler</button>
+        <button class="btn" id="dlgOk" type="button">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modale Facture / Reçu -->
+  <div id="receiptModal">
+    <div id="receiptBox">
+      <div id="receiptContent"></div>
+      <div class="no-print" style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;">
+        <button id="btnPrint" class="btn" style="flex:1;" onclick="printReceipt()">
+          <svg class="ico" viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Imprimer
+        </button>
+        <button id="btnPdf" class="btn" style="flex:1;" onclick="exportReceiptPdf()">
+          <svg class="ico" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span id="btnPdfLabel">Enregistrer en PDF</span>
+        </button>
+        <button class="btn-sm" style="padding:9px 14px;" onclick="closeReceipt()">
+          <svg class="ico" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          Fermer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const DB_NAME = "CommerceProOfflineDB_V4";
+    const DB_VERSION = 1;
+    const DEFAULT_BRAND_IMG = "./brand-banner.jpg";
+    let db;
+
+    let state = {
+      settings: {
+        id: "config",
+        shopName: "Samba Sy Logiciels — CommercePro",
+        ownerName: "M. Samba Sy",
+        tagline: "La Rénovation Digitale — Gestion Commerciale",
+        phone: "",
+        address: "Kaffrine, Sénégal",
+        email: "",
+        taxId: "",
+        currency: "FCFA",
+        mode: "Commerce général",
+        logoDataUrl: DEFAULT_BRAND_IMG,
+        ownerPhotoDataUrl: DEFAULT_BRAND_IMG,
+        syncRoom: ""
+      },
+      products: [],
+      customers: [],
+      sales: [],
+      expenses: [],
+      cart: []
+    };
+
+    function openDatabase() {
+      return new Promise((resolve, reject) => {
+        const req = indexedDB.open(DB_NAME, DB_VERSION);
+        req.onupgradeneeded = (e) => {
+          const d = e.target.result;
+          ["settings", "products", "customers", "sales", "expenses"].forEach((store) => {
+            if (!d.objectStoreNames.contains(store)) {
+              d.createObjectStore(store, { keyPath: "id" });
+            }
+          });
+        };
+        req.onsuccess = () => { db = req.result; resolve(db); };
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    function dbGetAll(store) {
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(store, "readonly");
+        const req = tx.objectStore(store).getAll();
+        req.onsuccess = () => resolve(req.result || []);
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    function dbPut(store, obj) {
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(store, "readwrite");
+        tx.objectStore(store).put(obj);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+        tx.onabort = () => reject(tx.error);
+      });
+    }
+
+    function dbClear(store) {
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(store, "readwrite");
+        tx.objectStore(store).clear();
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+        tx.onabort = () => reject(tx.error);
+      });
+    }
+
+    function dbDelete(store, key) {
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(store, "readwrite");
+        tx.objectStore(store).delete(key);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+        tx.onabort = () => reject(tx.error);
+      });
+    }
+
+    // Échappement HTML : toute donnée saisie ou importée est neutralisée avant affichage
+    function esc(v) {
+      return String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    }
+
+    // Argument JS sûr à l'intérieur d'un attribut onclick="..."
+    function jsq(v) { return esc(JSON.stringify(String(v))); }
+
+    // Notification non bloquante (alert() fige les champs de saisie sous Electron/Windows)
+    function notify(msg, type) {
+      const box = document.getElementById("toastBox");
+      const t = document.createElement("div");
+      t.className = "toast" + (type ? " " + type : "");
+      t.textContent = msg;
+      box.appendChild(t);
+      while (box.children.length > 3) box.firstChild.remove();
+      setTimeout(() => t.remove(), type === "err" ? 6500 : 4200);
+    }
+
+    // Dialogues internes : prompt() n'existe pas dans Electron, confirm() y est fragile
+    let dlgResolve = null;
+    function openDialog(message, withInput, defaultValue, okLabel) {
+      return new Promise((resolve) => {
+        dlgResolve = resolve;
+        document.getElementById("dlgMsg").textContent = message;
+        const input = document.getElementById("dlgInput");
+        input.style.display = withInput ? "block" : "none";
+        input.value = withInput ? (defaultValue ?? "") : "";
+        document.getElementById("dlgOk").textContent = okLabel || "OK";
+        document.getElementById("dlgOverlay").style.display = "flex";
+        setTimeout(() => (withInput ? input : document.getElementById("dlgOk")).focus(), 30);
+      });
+    }
+    function closeDialog(result) {
+      document.getElementById("dlgOverlay").style.display = "none";
+      if (dlgResolve) { const r = dlgResolve; dlgResolve = null; r(result); }
+    }
+    function confirmDialog(message, okLabel) { return openDialog(message, false, null, okLabel || "Confirmer"); }
+    function askNumber(message, defaultValue) { return openDialog(message, true, defaultValue, "Valider"); }
+    document.getElementById("dlgCancel").addEventListener("click", () => closeDialog(null));
+    document.getElementById("dlgOk").addEventListener("click", () => {
+      const input = document.getElementById("dlgInput");
+      closeDialog(input.style.display === "none" ? true : input.value);
+    });
+    document.addEventListener("keydown", (e) => {
+      if (document.getElementById("dlgOverlay").style.display !== "flex") return;
+      if (e.key === "Escape") closeDialog(null);
+      if (e.key === "Enter") document.getElementById("dlgOk").click();
+    });
+
+    function money(val) {
+      return `${Number(val || 0).toLocaleString("fr-FR")} ${state.settings.currency || ""}`.trim();
+    }
+
+    async function refreshState() {
+      const cfgList = await dbGetAll("settings");
+      if (cfgList.length) state.settings = { ...state.settings, ...cfgList[0] };
+      state.settings.currency = String(state.settings.currency || "FCFA").replace(/[<>&"']/g, "");
+      state.products = await dbGetAll("products");
+      state.customers = await dbGetAll("customers");
+      state.sales = (await dbGetAll("sales")).sort((a, b) => b.date.localeCompare(a.date));
+      state.expenses = (await dbGetAll("expenses")).sort((a, b) => b.date.localeCompare(a.date));
+
+      applyHeaderAndSettings();
+      renderKPIs();
+      renderPOSProducts();
+      renderCustomerSelect();
+      renderCart();
+      renderCatalog();
+      renderCustomers();
+      renderExpenses();
+      renderSalesHistory();
+    }
+
+    function applyHeaderAndSettings() {
+      const logoSrc = state.settings.logoDataUrl || DEFAULT_BRAND_IMG;
+      const ownerSrc = state.settings.ownerPhotoDataUrl || DEFAULT_BRAND_IMG;
+
+      document.getElementById("shopHeaderName").textContent = state.settings.shopName || "Samba Sy Logiciels";
+      document.getElementById("shopHeaderMode").textContent = `(${state.settings.mode})`;
+      document.getElementById("headerLogoImg").src = logoSrc;
+
+      document.getElementById("homeWelcomePhoto").src = ownerSrc;
+      document.getElementById("welcomeTitle").textContent = state.settings.shopName || "Samba Sy Logiciels — CommercePro";
+      document.getElementById("welcomeSubtitle").textContent =
+        [state.settings.tagline, state.settings.ownerName, state.settings.address].filter(Boolean).join(" · ") ||
+        "La Rénovation Digitale — Gestion commerciale hors ligne PC & Android";
+
+      document.getElementById("cfgShopName").value = state.settings.shopName || "";
+      document.getElementById("cfgOwnerName").value = state.settings.ownerName || "";
+      document.getElementById("cfgTagline").value = state.settings.tagline || "";
+      document.getElementById("cfgPhone").value = state.settings.phone || "";
+      document.getElementById("cfgAddress").value = state.settings.address || "";
+      document.getElementById("cfgEmail").value = state.settings.email || "";
+      document.getElementById("cfgTaxId").value = state.settings.taxId || "";
+      document.getElementById("cfgCurrency").value = state.settings.currency || "FCFA";
+      document.getElementById("cfgMode").value = state.settings.mode || "Commerce général";
+      document.getElementById("cfgSyncRoom").value = state.settings.syncRoom || "";
+
+      document.getElementById("previewLogo").src = logoSrc;
+      document.getElementById("previewOwner").src = ownerSrc;
+    }
+
+    // Met à jour uniquement les images (sans écraser les champs texte en cours de saisie)
+    function refreshImages() {
+      const logoSrc = state.settings.logoDataUrl || DEFAULT_BRAND_IMG;
+      const ownerSrc = state.settings.ownerPhotoDataUrl || DEFAULT_BRAND_IMG;
+      document.getElementById("headerLogoImg").src = logoSrc;
+      document.getElementById("homeWelcomePhoto").src = ownerSrc;
+      document.getElementById("previewLogo").src = logoSrc;
+      document.getElementById("previewOwner").src = ownerSrc;
+    }
+
+    function handleImageUpload(event, fieldKey) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const maxDim = 260;
+          let w = img.width;
+          let h = img.height;
+          if (w > maxDim || h > maxDim) {
+            if (w > h) { h = Math.round((h * maxDim) / w); w = maxDim; }
+            else { w = Math.round((w * maxDim) / h); h = maxDim; }
+          }
+          const canvas = document.createElement("canvas");
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext("2d");
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0, 0, w, h);
+          ctx.drawImage(img, 0, 0, w, h);
+          state.settings[fieldKey] = canvas.toDataURL("image/jpeg", 0.84);
+          refreshImages();
+        };
+        img.onerror = () => notify("Image illisible. Choisissez un fichier JPG, PNG ou WEBP.", "err");
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+      event.target.value = "";
+    }
+
+    function resetDefaultImage(fieldKey) {
+      state.settings[fieldKey] = DEFAULT_BRAND_IMG;
+      refreshImages();
+    }
+
+    async function saveSettings() {
+      state.settings = {
+        ...state.settings,
+        id: "config",
+        shopName: document.getElementById("cfgShopName").value.trim() || "Samba Sy Logiciels",
+        ownerName: document.getElementById("cfgOwnerName").value.trim(),
+        tagline: document.getElementById("cfgTagline").value.trim(),
+        phone: document.getElementById("cfgPhone").value.trim(),
+        address: document.getElementById("cfgAddress").value.trim(),
+        email: document.getElementById("cfgEmail").value.trim(),
+        taxId: document.getElementById("cfgTaxId").value.trim(),
+        currency: document.getElementById("cfgCurrency").value.trim() || "FCFA",
+        mode: document.getElementById("cfgMode").value,
+        syncRoom: document.getElementById("cfgSyncRoom").value.trim()
+      };
+      await dbPut("settings", state.settings);
+      await refreshState();
+      notify("Paramètres, logo et photo enregistrés avec succès.", "ok");
+    }
+
+    function renderKPIs() {
+      const ca = state.sales.reduce((acc, s) => acc + Number(s.total || 0), 0);
+      const collected = state.sales.reduce((acc, s) => acc + Number(s.paidAmount || 0), 0);
+      const credits = state.sales.reduce((acc, s) => acc + Number(s.dueAmount || 0), 0);
+      const grossProfit = state.sales.reduce((acc, s) => acc + Number(s.grossProfit || 0), 0);
+      const totalExpenses = state.expenses.reduce((acc, e) => acc + Number(e.amount || 0), 0);
+      const netProfit = grossProfit - totalExpenses;
+
+      document.getElementById("kpiCA").textContent = money(ca);
+      document.getElementById("kpiCollected").textContent = money(collected);
+      document.getElementById("kpiCredits").textContent = money(credits);
+      document.getElementById("kpiNetProfit").textContent = money(netProfit);
+      document.getElementById("kpiNetProfit").style.color = netProfit >= 0 ? "var(--success)" : "var(--danger)";
+    }
+
+    function renderPOSProducts() {
+      const q = document.getElementById("posSearch").value.trim().toLowerCase();
+      const list = state.products.filter((p) =>
+        p.name.toLowerCase().includes(q) || (p.sku || "").toLowerCase().includes(q)
+      );
+      document.getElementById("posProducts").innerHTML = list.map((p) => {
+        const isLow = Number(p.stock) <= Number(p.minStock || 0);
+        return `
+          <div class="prod-card" onclick="addToCart(${jsq(p.id)})">
+            <div>
+              <div style="font-weight:600;font-size:13px;">${esc(p.name)}</div>
+              <div style="font-size:11px;color:var(--muted);">${esc(p.unit || "unité")}${p.sku ? " · " + esc(p.sku) : ""}</div>
+            </div>
+            <div>
+              <div class="price">${money(p.sellPrice)}</div>
+              <div class="${isLow ? 'low' : 'ok'}">Stock : ${esc(p.stock ?? 0)}</div>
+            </div>
+          </div>
+        `;
+      }).join("") || `<p style="color:var(--muted);font-size:13px;">Aucun article disponible.</p>`;
+    }
+
+    function addToCart(prodId) {
+      const prod = state.products.find((p) => p.id === prodId);
+      if (!prod || Number(prod.stock) <= 0) return notify("Stock épuisé pour cet article.", "err");
+      const found = state.cart.find((i) => i.productId === prodId);
+      if (found) {
+        if (found.qty >= Number(prod.stock)) return notify("Stock maximum atteint.", "err");
+        found.qty += 1;
+      } else {
+        state.cart.push({
+          productId: prod.id,
+          name: prod.name,
+          unit: prod.unit || "unité",
+          buyPrice: Number(prod.buyPrice || 0),
+          sellPrice: Number(prod.sellPrice || 0),
+          qty: 1
+        });
+      }
+      renderCart();
+    }
+
+    function changeCartQty(idx, delta) {
+      const item = state.cart[idx];
+      const prod = state.products.find((p) => p.id === item.productId);
+      const nextQty = item.qty + delta;
+      if (nextQty <= 0) {
+        state.cart.splice(idx, 1);
+      } else if (prod && nextQty > Number(prod.stock)) {
+        notify("Quantité supérieure au stock disponible.", "err");
+        return;
+      } else {
+        item.qty = nextQty;
+      }
+      renderCart();
+    }
+
+    function onScenarioChange() {
+      const scenario = document.getElementById("paymentScenario").value;
+      const subtotal = state.cart.reduce((s, i) => s + i.sellPrice * i.qty, 0);
+      const discount = Math.max(0, Number(document.getElementById("cartDiscount").value || 0));
+      const total = Math.max(0, subtotal - discount);
+      const paidInput = document.getElementById("cartPaid");
+
+      if (scenario === "full") {
+        paidInput.value = total;
+      } else if (scenario === "none") {
+        paidInput.value = 0;
+        document.getElementById("cartPayment").value = "Crédit (Rien versé)";
+      } else if (scenario === "advance") {
+        paidInput.value = "";
+        paidInput.focus();
+      }
+      if (scenario !== "none" && document.getElementById("cartPayment").value === "Crédit (Rien versé)") {
+        document.getElementById("cartPayment").value = "Espèces";
+      }
+      renderCart();
+    }
+
+    function onManualPaidInput() {
+      const subtotal = state.cart.reduce((s, i) => s + i.sellPrice * i.qty, 0);
+      const discount = Math.max(0, Number(document.getElementById("cartDiscount").value || 0));
+      const total = Math.max(0, subtotal - discount);
+      const val = Number(document.getElementById("cartPaid").value || 0);
+      const sel = document.getElementById("paymentScenario");
+      if (val <= 0) sel.value = "none";
+      else if (val < total) sel.value = "advance";
+      else sel.value = "full";
+      const pay = document.getElementById("cartPayment");
+      if (val > 0 && pay.value === "Crédit (Rien versé)") pay.value = "Espèces";
+      if (val <= 0) pay.value = "Crédit (Rien versé)";
+      renderCart();
+    }
+
+    function getCartTotals() {
+      const subtotal = state.cart.reduce((s, i) => s + i.sellPrice * i.qty, 0);
+      const discount = Math.max(0, Number(document.getElementById("cartDiscount").value || 0));
+      const total = Math.max(0, subtotal - discount);
+      const scenario = document.getElementById("paymentScenario").value;
+      const rawPaid = document.getElementById("cartPaid").value;
+
+      let paid = total;
+      if (scenario === "none") {
+        paid = 0;
+      } else if (rawPaid !== "") {
+        paid = Math.max(0, Number(rawPaid));
+      } else if (scenario === "advance") {
+        paid = 0;
+      }
+
+      const appliedPaid = Math.min(paid, total);
+      const remainingDebt = Math.max(0, total - appliedPaid);
+      const changeDue = Math.max(0, paid - total);
+
+      let paymentStatus = "PAYÉ INTÉGRALEMENT";
+      if (total > 0 && appliedPaid === 0) paymentStatus = "RIEN VERSÉ (CRÉDIT TOTAL)";
+      else if (remainingDebt > 0) paymentStatus = "AVANCE VERSÉE (SOLDE DÛ)";
+
+      return { subtotal, discount, total, rawPaid: paid, appliedPaid, remainingDebt, changeDue, paymentStatus };
+    }
+
+    function renderCart() {
+      const box = document.getElementById("cartList");
+      if (!state.cart.length) {
+        box.innerHTML = `<p style="color:var(--muted);font-size:13px;">Panier vide.</p>`;
+        document.getElementById("sumTotalToPay").textContent = money(0);
+        document.getElementById("sumPaidAdvance").textContent = money(0);
+        document.getElementById("sumRemainingDebt").textContent = money(0);
+        document.getElementById("sumChangeDue").textContent = money(0);
+        const badge = document.getElementById("sumStatusBadge");
+        badge.textContent = "EN ATTENTE";
+        badge.className = "status-pill status-paid";
+        return;
+      }
+
+      box.innerHTML = state.cart.map((item, idx) => `
+        <div class="cart-line">
+          <div>
+            <div style="font-weight:600;font-size:13px;">${esc(item.name)}</div>
+            <div style="font-size:12px;color:var(--muted);">${money(item.sellPrice)} × ${esc(item.qty)}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:4px;">
+            <button class="btn-sm" onclick="changeCartQty(${idx}, -1)">-</button>
+            <button class="btn-sm" onclick="changeCartQty(${idx}, 1)">+</button>
+            <strong style="min-width:72px;text-align:right;font-size:13px;">${money(item.sellPrice * item.qty)}</strong>
+          </div>
+        </div>
+      `).join("");
+
+      const { total, appliedPaid, remainingDebt, changeDue, paymentStatus } = getCartTotals();
+      document.getElementById("sumTotalToPay").textContent = money(total);
+      document.getElementById("sumPaidAdvance").textContent = money(appliedPaid);
+      document.getElementById("sumRemainingDebt").textContent = money(remainingDebt);
+      document.getElementById("sumChangeDue").textContent = money(changeDue);
+
+      const badge = document.getElementById("sumStatusBadge");
+      badge.textContent = paymentStatus;
+      if (remainingDebt === 0) badge.className = "status-pill status-paid";
+      else if (appliedPaid > 0) badge.className = "status-pill status-advance";
+      else badge.className = "status-pill status-unpaid";
+    }
+
+    function renderCustomerSelect() {
+      const sel = document.getElementById("cartCustomer");
+      const cur = sel.value;
+      sel.innerHTML = `<option value="">Client comptoir</option>` + state.customers
+        .map((c) => `<option value="${esc(c.id)}">${esc(c.name)} (Dette: ${money(c.balanceDue || 0)})</option>`)
+        .join("");
+      sel.value = cur;
+    }
+
+    let saleInProgress = false;
+    async function validateSale() {
+      if (saleInProgress) return;
+      if (!state.cart.length) return notify("Ajoutez au moins un article au panier.", "err");
+      const { subtotal, discount, total, rawPaid, appliedPaid, remainingDebt, changeDue, paymentStatus } = getCartTotals();
+      const customerId = document.getElementById("cartCustomer").value || null;
+      const customer = state.customers.find((c) => c.id === customerId);
+
+      if (remainingDebt > 0 && !customer) {
+        return notify("Pour enregistrer une avance ou un crédit (rien versé), sélectionnez un client dans la liste (ou créez-le dans l'onglet Clients).", "err");
+      }
+
+      // Re-vérification du stock au moment de valider
+      for (const item of state.cart) {
+        const pr = state.products.find((x) => x.id === item.productId);
+        if (!pr || Number(pr.stock) < item.qty) {
+          return notify(`Stock insuffisant pour « ${item.name} ». Ajustez le panier.`, "err");
+        }
+      }
+      saleInProgress = true;
+      try {
+      const lineCost = state.cart.reduce((s, i) => s + i.buyPrice * i.qty, 0);
+      const grossProfit = total - lineCost;
+
+      const sale = {
+        id: "FAC-" + Date.now(),
+        date: new Date().toISOString(),
+        docTitle: document.getElementById("docTypeSelect").value,
+        customerId,
+        customerName: customer ? customer.name : "Client comptoir",
+        customerPhone: customer ? (customer.phone || "") : "",
+        customerAddress: customer ? (customer.address || "") : "",
+        paymentMethod: document.getElementById("cartPayment").value,
+        items: [...state.cart],
+        subtotal,
+        discount,
+        total,
+        tenderedAmount: rawPaid,
+        paidAmount: appliedPaid,
+        dueAmount: remainingDebt,
+        changeDue,
+        paymentStatus,
+        grossProfit
+      };
+
+      for (const item of state.cart) {
+        const p = state.products.find((x) => x.id === item.productId);
+        if (p) {
+          p.stock = Math.max(0, Number(p.stock) - Number(item.qty));
+          await dbPut("products", p);
+        }
+      }
+
+      if (customer && remainingDebt > 0) {
+        customer.balanceDue = Number(customer.balanceDue || 0) + remainingDebt;
+        await dbPut("customers", customer);
+      }
+
+      await dbPut("sales", sale);
+      state.cart = [];
+      document.getElementById("cartDiscount").value = "0";
+      document.getElementById("cartPaid").value = "";
+      document.getElementById("paymentScenario").value = "full";
+      await refreshState();
+      openReceipt(sale.id);
+      } catch (err) {
+        notify("Erreur lors de l'enregistrement de la vente : " + err.message, "err");
+      } finally {
+        saleInProgress = false;
+      }
+    }
+
+    function openReceipt(saleId) {
+      const s = state.sales.find((x) => x.id === saleId);
+      if (!s) return;
+      currentReceiptId = saleId;
+      const cfg = state.settings;
+      const logoSrc = cfg.logoDataUrl || DEFAULT_BRAND_IMG;
+      const ownerSrc = cfg.ownerPhotoDataUrl || DEFAULT_BRAND_IMG;
+
+      const logoHtml = logoSrc ? `<img src="${esc(logoSrc)}" class="inv-logo" alt="Logo" />` : "";
+      const ownerHtml = ownerSrc
+        ? `<div style="text-align:center;">
+             <img src="${esc(ownerSrc)}" class="inv-owner-photo" alt="Propriétaire" />
+             ${cfg.ownerName ? `<div style="font-size:11px;font-weight:700;margin-top:3px;">${esc(cfg.ownerName)}</div>` : ""}
+           </div>`
+        : "";
+
+      const rowsHtml = s.items.map((item, index) => `
+        <tr>
+          <td class="center">${index + 1}</td>
+          <td><strong>${esc(item.name)}</strong>${item.unit ? ` <span style="color:#64748b;font-size:12px;">(${esc(item.unit)})</span>` : ""}</td>
+          <td class="center">${esc(item.qty)}</td>
+          <td class="num">${money(item.sellPrice)}</td>
+          <td class="num"><strong>${money(item.sellPrice * item.qty)}</strong></td>
+        </tr>
+      `).join("");
+
+      const statusLabel = s.paymentStatus || (Number(s.dueAmount) === 0 ? "PAYÉ INTÉGRALEMENT" : (Number(s.paidAmount) > 0 ? "AVANCE VERSÉE" : "RIEN VERSÉ"));
+
+      document.getElementById("receiptContent").innerHTML = `
+        <div class="inv-header">
+          <div class="inv-company">
+            ${logoHtml}
+            <div>
+              <h2 style="margin:0 0 4px 0;color:#1e3a8a;font-size:19px;">${esc(cfg.shopName || "Samba Sy Logiciels")}</h2>
+              ${cfg.tagline ? `<div style="font-size:12px;font-weight:600;color:#334155;margin-bottom:4px;">${esc(cfg.tagline)}</div>` : ""}
+              ${cfg.ownerName ? `<div style="font-size:12px;"><strong>Propriétaire / Gérant :</strong> ${esc(cfg.ownerName)}</div>` : ""}
+              ${cfg.address ? `<div style="font-size:12px;"><strong>Adresse :</strong> ${esc(cfg.address)}</div>` : ""}
+              ${cfg.phone ? `<div style="font-size:12px;"><strong>Téléphone :</strong> ${esc(cfg.phone)}</div>` : ""}
+              ${cfg.email ? `<div style="font-size:12px;"><strong>Email :</strong> ${esc(cfg.email)}</div>` : ""}
+              ${cfg.taxId ? `<div style="font-size:12px;"><strong>Réf. fiscale / RC :</strong> ${esc(cfg.taxId)}</div>` : ""}
+            </div>
+          </div>
+          ${ownerHtml}
+        </div>
+
+        <div class="inv-big-title">${esc(s.docTitle || "FACTURE DE PAIEMENT")}</div>
+
+        <div class="inv-meta-grid">
+          <div class="inv-meta-card">
+            <div><strong>Document N° :</strong> ${esc(s.id)}</div>
+            <div><strong>Date & Heure :</strong> ${new Date(s.date).toLocaleString("fr-FR")}</div>
+            <div><strong>Mode de règlement :</strong> ${esc(s.paymentMethod)}</div>
+          </div>
+          <div class="inv-meta-card">
+            <div><strong>Facturé à :</strong> ${esc(s.customerName)}</div>
+            ${s.customerPhone ? `<div><strong>Tél. client :</strong> ${esc(s.customerPhone)}</div>` : ""}
+            ${s.customerAddress ? `<div><strong>Adresse client :</strong> ${esc(s.customerAddress)}</div>` : ""}
+            <div><strong>État :</strong> <strong>${statusLabel}</strong></div>
+          </div>
+        </div>
+
+        <table class="inv-table">
+          <thead>
+            <tr>
+              <th class="center" style="width:52px;">N°</th>
+              <th>Désignation</th>
+              <th class="center" style="width:80px;">Nombre</th>
+              <th class="num" style="width:125px;">Prix unitaire</th>
+              <th class="num" style="width:135px;">Prix total</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHtml}
+          </tbody>
+        </table>
+
+        <div class="inv-totals-wrap">
+          <div style="font-size:12px;color:#475569;max-width:340px;">
+            <div><strong>Observation :</strong></div>
+            <div>${Number(s.dueAmount) > 0
+              ? `Il reste un solde de <strong>${money(s.dueAmount)}</strong> à régler sur cette facture.`
+              : `Facture soldée. Merci pour votre confiance !`}</div>
+          </div>
+
+          <table class="inv-totals-table">
+            ${Number(s.discount) > 0 ? `
+              <tr><td>Sous-total brut</td><td style="text-align:right;">${money(s.subtotal || (s.total + s.discount))}</td></tr>
+              <tr><td>Remise accordée</td><td style="text-align:right;">-${money(s.discount)}</td></tr>
+            ` : ""}
+            <tr class="highlight">
+              <td>Total à payer</td>
+              <td style="text-align:right;">${money(s.total)}</td>
+            </tr>
+            <tr>
+              <td>Avance / Montant versé</td>
+              <td style="text-align:right;color:#15803d;font-weight:700;">${money(s.paidAmount)}</td>
+            </tr>
+            <tr>
+              <td>Reste à payer (Dette)</td>
+              <td style="text-align:right;color:${Number(s.dueAmount) > 0 ? '#b91c1c' : '#0f172a'};font-weight:700;">${money(s.dueAmount)}</td>
+            </tr>
+            ${Number(s.changeDue) > 0 ? `
+              <tr><td>Monnaie rendue</td><td style="text-align:right;">${money(s.changeDue)}</td></tr>
+            ` : ""}
+          </table>
+        </div>
+
+        <div class="inv-signatures">
+          <div>Signature du Client</div>
+          <div>Cachet & Signature de l'Entreprise</div>
+        </div>
+      `;
+      document.getElementById("receiptModal").style.display = "flex";
+    }
+
+    function closeReceipt() {
+      document.getElementById("receiptModal").style.display = "none";
+    }
+
+    document.getElementById("productForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const prod = {
+        id: "PRD-" + Date.now(),
+        name: document.getElementById("prodName").value.trim(),
+        sku: document.getElementById("prodSku").value.trim(),
+        unit: document.getElementById("prodUnit").value.trim() || "unité",
+        buyPrice: Number(document.getElementById("prodBuy").value),
+        sellPrice: Number(document.getElementById("prodSell").value),
+        stock: Number(document.getElementById("prodStock").value),
+        minStock: Number(document.getElementById("prodMin").value || 5)
+      };
+      await dbPut("products", prod);
+      e.target.reset();
+      document.getElementById("prodUnit").value = "unité";
+      document.getElementById("prodMin").value = "5";
+      await refreshState();
+    });
+
+    async function addStockQty(prodId) {
+      const p = state.products.find((x) => x.id === prodId);
+      if (!p) return;
+      const raw = await askNumber(`Quantité à ajouter au stock de « ${p.name} » :`, "10");
+      if (raw === null) return;
+      const q = Number(raw);
+      if (!q || q <= 0) return notify("Quantité invalide.", "err");
+      p.stock = Number(p.stock) + q;
+      await dbPut("products", p);
+      await refreshState();
+    }
+
+    async function deleteProduct(prodId) {
+      const p = state.products.find((x) => x.id === prodId);
+      if (!p) return;
+      if (!(await confirmDialog(`Voulez-vous vraiment supprimer l'article « ${p.name} » ?`, "Supprimer"))) return;
+      await dbDelete("products", prodId);
+      state.cart = state.cart.filter((item) => item.productId !== prodId);
+      await refreshState();
+    }
+
+    function renderCatalog() {
+      document.getElementById("catalogBody").innerHTML = state.products.map((p) => `
+        <tr>
+          <td><strong>${esc(p.name)}</strong> <span style="color:var(--muted);">(${esc(p.unit)})</span></td>
+          <td>${esc(p.sku) || "-"}</td>
+          <td>${money(p.buyPrice)}</td>
+          <td>${money(p.sellPrice)}</td>
+          <td class="${Number(p.stock) <= Number(p.minStock) ? 'low' : 'ok'}">${esc(p.stock)}</td>
+          <td style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+            <button class="btn-sm" onclick="addStockQty(${jsq(p.id)})">
+              <svg class="ico" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Entrée
+            </button>
+            <button class="btn-sm" style="background:var(--danger);color:#fff;" onclick="deleteProduct(${jsq(p.id)})">
+              <svg class="ico" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+              Supprimer
+            </button>
+          </td>
+        </tr>
+      `).join("") || `<tr><td colspan="6" style="color:var(--muted);">Aucun article.</td></tr>`;
+    }
+
+    document.getElementById("customerForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const cust = {
+        id: "CLT-" + Date.now(),
+        name: document.getElementById("custName").value.trim(),
+        phone: document.getElementById("custPhone").value.trim(),
+        address: document.getElementById("custAddress").value.trim(),
+        type: document.getElementById("custType").value,
+        balanceDue: 0
+      };
+      await dbPut("customers", cust);
+      e.target.reset();
+      await refreshState();
+    });
+
+    async function settleCustomerDebt(custId) {
+      const c = state.customers.find((x) => x.id === custId);
+      if (!c || Number(c.balanceDue || 0) <= 0) return notify("Aucune dette en cours pour ce client.");
+      const raw = await askNumber(`Dette actuelle de ${c.name} : ${money(c.balanceDue)}.\nMontant du versement reçu :`, String(c.balanceDue));
+      if (raw === null) return;
+      let amt = Number(raw);
+      if (!amt || amt <= 0) return notify("Montant invalide.", "err");
+      if (amt > Number(c.balanceDue)) {
+        amt = Number(c.balanceDue);
+        notify(`Montant ramené à la dette restante (${money(amt)}).`);
+      }
+
+      c.balanceDue = Math.max(0, Number(c.balanceDue) - amt);
+      await dbPut("customers", c);
+
+      let remainingPayment = amt;
+      const clientUnpaidSales = state.sales
+        .filter((s) => s.customerId === custId && Number(s.dueAmount) > 0)
+        .sort((a, b) => a.date.localeCompare(b.date));
+
+      for (const s of clientUnpaidSales) {
+        if (remainingPayment <= 0) break;
+        const payOnThis = Math.min(remainingPayment, Number(s.dueAmount));
+        s.paidAmount = Number(s.paidAmount) + payOnThis;
+        s.dueAmount = Math.max(0, Number(s.dueAmount) - payOnThis);
+        s.paymentStatus = s.dueAmount === 0 ? "PAYÉ INTÉGRALEMENT" : "AVANCE VERSÉE (SOLDE DÛ)";
+        remainingPayment -= payOnThis;
+        await dbPut("sales", s);
+      }
+
+      await refreshState();
+      notify(`Règlement de ${money(amt)} enregistré. Nouvelle dette restante : ${money(c.balanceDue)}.`, "ok");
+    }
+
+    function renderCustomers() {
+      document.getElementById("customersBody").innerHTML = state.customers.map((c) => {
+        const custSales = state.sales.filter((s) => s.customerId === c.id);
+        const totalBilled = custSales.reduce((sum, s) => sum + Number(s.total || 0), 0);
+        const totalPaid = custSales.reduce((sum, s) => sum + Number(s.paidAmount || 0), 0);
+        const debt = Number(c.balanceDue || 0);
+
+        return `
+          <tr>
+            <td><strong>${esc(c.name)}</strong><br><span style="font-size:11px;color:var(--muted);">${esc(c.type)}</span></td>
+            <td>${esc(c.phone) || "-"}${c.address ? "<br><span style='font-size:11px;color:var(--muted);'>" + esc(c.address) + "</span>" : ""}</td>
+            <td>${money(totalBilled)}</td>
+            <td style="color:var(--success);font-weight:600;">${money(totalPaid)}</td>
+            <td class="${debt > 0 ? 'low' : 'ok'}">${money(debt)}</td>
+            <td>
+              <button class="btn-sm" onclick="settleCustomerDebt(${jsq(c.id)})">
+                <svg class="ico" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                Encaisser
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join("") || `<tr><td colspan="6" style="color:var(--muted);">Aucun client enregistré.</td></tr>`;
+    }
+
+    document.getElementById("expenseForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const exp = {
+        id: "DEP-" + Date.now(),
+        date: new Date().toISOString(),
+        label: document.getElementById("expLabel").value.trim(),
+        amount: Number(document.getElementById("expAmount").value),
+        account: document.getElementById("expAccount").value
+      };
+      await dbPut("expenses", exp);
+      e.target.reset();
+      await refreshState();
+    });
+
+    function renderExpenses() {
+      document.getElementById("expensesBody").innerHTML = state.expenses.map((e) => `
+        <tr>
+          <td>${new Date(e.date).toLocaleDateString("fr-FR")}</td>
+          <td><strong>${esc(e.label)}</strong></td>
+          <td>${esc(e.account)}</td>
+          <td class="low">-${money(e.amount)}</td>
+        </tr>
+      `).join("") || `<tr><td colspan="4" style="color:var(--muted);">Aucune dépense enregistrée.</td></tr>`;
+    }
+
+    async function deleteSale(saleId) {
+      const s = state.sales.find((x) => x.id === saleId);
+      if (!s) return;
+      if (!(await confirmDialog(`Voulez-vous vraiment supprimer la facture « ${s.id} » (${money(s.total)}) ?\nLe stock des articles et la dette éventuelle du client seront automatiquement rétablis.`, "Supprimer"))) return;
+
+      // 1. Rétablir le stock des articles vendus sur cette facture
+      for (const item of (s.items || [])) {
+        const prod = state.products.find((p) => p.id === item.productId);
+        if (prod) {
+          prod.stock = Number(prod.stock || 0) + Number(item.qty || 0);
+          await dbPut("products", prod);
+        }
+      }
+
+      // 2. Déduire le reste à payer (dette) éventuel du solde client
+      if (s.customerId && Number(s.dueAmount || 0) > 0) {
+        const cust = state.customers.find((c) => c.id === s.customerId);
+        if (cust) {
+          cust.balanceDue = Math.max(0, Number(cust.balanceDue || 0) - Number(s.dueAmount || 0));
+          await dbPut("customers", cust);
+        }
+      }
+
+      // 3. Supprimer la facture de IndexedDB
+      await dbDelete("sales", saleId);
+      await refreshState();
+    }
+
+    function renderSalesHistory() {
+      document.getElementById("salesBody").innerHTML = state.sales.slice(0, 200).map((s) => {
+        const due = Number(s.dueAmount || 0);
+        const paid = Number(s.paidAmount || 0);
+        let badgeClass = "status-paid";
+        let label = "Payé";
+        if (due > 0 && paid > 0) { badgeClass = "status-advance"; label = "Avance"; }
+        else if (due > 0 && paid === 0) { badgeClass = "status-unpaid"; label = "Rien versé"; }
+
+        return `
+          <tr>
+            <td><strong>${esc(s.id)}</strong><br><span style="font-size:11px;color:var(--muted);">${new Date(s.date).toLocaleString("fr-FR")}</span></td>
+            <td>${esc(s.customerName)}</td>
+            <td><strong>${money(s.total)}</strong></td>
+            <td style="color:var(--success);">${money(paid)}</td>
+            <td style="color:${due > 0 ? 'var(--danger)' : 'inherit'};font-weight:600;">${money(due)}</td>
+            <td><span class="status-pill ${badgeClass}">${label}</span></td>
+            <td style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+              <button class="btn-sm" onclick="openReceipt(${jsq(s.id)})">
+                <svg class="ico" viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                Facture
+              </button>
+              <button class="btn-sm" style="background:var(--danger);color:#fff;" onclick="deleteSale(${jsq(s.id)})">
+                <svg class="ico" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                Supprimer
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join("") || `<tr><td colspan="7" style="color:var(--muted);">Aucune facture enregistrée.</td></tr>`;
+      document.getElementById("salesHint").textContent = state.sales.length > 200
+        ? `Affichage des 200 dernières factures sur ${state.sales.length}. Les plus anciennes restent dans la sauvegarde JSON.`
+        : "";
+    }
+
+    async function loadDemoCatalog() {
+      const items = [
+        { id: "PRD-101", name: "Sac Riz Parfumé 5kg", sku: "RIZ5", unit: "sac", buyPrice: 3200, sellPrice: 3800, stock: 25, minStock: 5 },
+        { id: "PRD-102", name: "Bidon Huile 5L", sku: "HUI5", unit: "bidon", buyPrice: 5200, sellPrice: 6000, stock: 3, minStock: 5 },
+        { id: "PRD-103", name: "Ciment CPJ 42.5", sku: "CIM42", unit: "sac", buyPrice: 4200, sellPrice: 4700, stock: 40, minStock: 10 },
+        { id: "PRD-104", name: "Forfait Main-d'œuvre", sku: "SRV1", unit: "prestation", buyPrice: 0, sellPrice: 5000, stock: 999, minStock: 0 }
+      ];
+      for (const it of items) await dbPut("products", it);
+      await refreshState();
+    }
+
+    // ---------- Validation des données importées / reçues ----------
+    function cleanList(arr, store) {
+      if (!Array.isArray(arr)) return [];
+      return arr.filter((o) => {
+        if (!o || typeof o !== "object" || typeof o.id !== "string" || !o.id) return false;
+        if ((store === "sales" || store === "expenses") && typeof o.date !== "string") return false;
+        if ((store === "products" || store === "customers") && typeof o.name !== "string") return false;
+        if (store === "sales" && !Array.isArray(o.items)) return false;
+        return true;
+      });
+    }
+
+    async function applyIncomingData(data, { replace = false, keepLocalImages = false, syncRoom = null } = {}) {
+      const lists = {
+        products: cleanList(data.products, "products"),
+        customers: cleanList(data.customers, "customers"),
+        sales: cleanList(data.sales, "sales"),
+        expenses: cleanList(data.expenses, "expenses")
+      };
+      if (replace) for (const st of Object.keys(lists)) await dbClear(st);
+      if (data.settings && typeof data.settings === "object") {
+        const incoming = { ...data.settings };
+        if (keepLocalImages) { delete incoming.logoDataUrl; delete incoming.ownerPhotoDataUrl; }
+        const merged = { ...state.settings, ...incoming, id: "config" };
+        if (syncRoom !== null) merged.syncRoom = syncRoom;
+        await dbPut("settings", merged);
+      }
+      for (const st of Object.keys(lists)) for (const rec of lists[st]) await dbPut(st, rec);
+      return lists;
+    }
+
+    // ---------- Synchronisation chiffrée (AES-256-GCM, clé dérivée du code secret) ----------
+    async function computeRoomKey(secret) {
+      const enc = new TextEncoder().encode("commercepro-sync-v4::" + secret.trim().toLowerCase());
+      const hashBuffer = await crypto.subtle.digest("SHA-256", enc);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return "cp4_" + hashArray.map((b) => b.toString(16).padStart(2, "0")).join("").slice(0, 28);
+    }
+
+    const SYNC_SALT = new TextEncoder().encode("commercepro-sync-v5-salt");
+    async function deriveSyncKey(secret) {
+      const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(secret.trim().toLowerCase()), "PBKDF2", false, ["deriveKey"]);
+      return crypto.subtle.deriveKey(
+        { name: "PBKDF2", salt: SYNC_SALT, iterations: 150000, hash: "SHA-256" },
+        base, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]
+      );
+    }
+    function bytesToB64(bytes) {
+      let s = "";
+      for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+      return btoa(s);
+    }
+    function b64ToBytes(b64) {
+      const bin = atob(b64);
+      const out = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+      return out;
+    }
+    async function encryptPayload(obj, secret) {
+      const key = await deriveSyncKey(secret);
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const ct = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, new TextEncoder().encode(JSON.stringify(obj))));
+      const all = new Uint8Array(iv.length + ct.length);
+      all.set(iv); all.set(ct, iv.length);
+      return JSON.stringify({ v: 5, syncedAt: obj.syncedAt, enc: bytesToB64(all) });
+    }
+    async function decryptPayload(env, secret) {
+      const all = b64ToBytes(env.enc);
+      const key = await deriveSyncKey(secret);
+      const pt = await crypto.subtle.decrypt({ name: "AES-GCM", iv: all.slice(0, 12) }, key, all.slice(12));
+      return JSON.parse(new TextDecoder().decode(pt));
+    }
+
+    function setSyncStatus(msg, isError = false) {
+      const el = document.getElementById("syncStatusMsg");
+      el.textContent = msg;
+      el.style.color = isError ? "var(--danger)" : "var(--success)";
+    }
+
+    async function pushCloudSync() {
+      if (!navigator.onLine) {
+        return setSyncStatus("Connexion Internet requise pour envoyer vers le Cloud.", true);
+      }
+      const secret = document.getElementById("cfgSyncRoom").value.trim();
+      if (secret.length < 6) {
+        return setSyncStatus("Saisissez un code secret d'au moins 6 caractères.", true);
+      }
+
+      state.settings.syncRoom = secret;
+      await dbPut("settings", state.settings);
+
+      setSyncStatus("Envoi des dernières situations en cours...");
+      try {
+        const roomKey = await computeRoomKey(secret);
+        // Logo et photo (volumineux) ne sont pas synchronisés
+        const { logoDataUrl, ownerPhotoDataUrl, syncRoom, ...syncSettings } = state.settings;
+        const body = await encryptPayload({
+          syncedAt: new Date().toISOString(),
+          settings: syncSettings,
+          products: state.products,
+          customers: state.customers,
+          sales: state.sales,
+          expenses: state.expenses
+        }, secret);
+
+        const res = await fetch(`https://ntfy.sh/${roomKey}`, {
+          method: "POST",
+          headers: { "Title": "CommercePro Sync", "Filename": "commercepro-sync.json" },
+          body
+        });
+
+        if (!res.ok) throw new Error("Erreur serveur (" + res.status + ")");
+        setSyncStatus(`Données chiffrées envoyées à ${new Date().toLocaleTimeString("fr-FR")}. Récupérez-les maintenant sur l'autre appareil.`);
+      } catch (err) {
+        setSyncStatus("Échec de l'envoi : " + err.message, true);
+      }
+    }
+
+    async function pullCloudSync() {
+      if (!navigator.onLine) {
+        return setSyncStatus("Connexion Internet requise pour récupérer depuis le Cloud.", true);
+      }
+      const secret = document.getElementById("cfgSyncRoom").value.trim();
+      if (secret.length < 6) {
+        return setSyncStatus("Saisissez le même code secret que sur l'autre appareil.", true);
+      }
+
+      state.settings.syncRoom = secret;
+      await dbPut("settings", state.settings);
+
+      setSyncStatus("Recherche des dernières situations...");
+      try {
+        const roomKey = await computeRoomKey(secret);
+        const res = await fetch(`https://ntfy.sh/${roomKey}/json?poll=1&since=all`);
+        if (!res.ok) throw new Error("Erreur réseau (" + res.status + ")");
+
+        const lines = (await res.text()).trim().split("\n").filter(Boolean);
+        let latestPayload = null;
+
+        for (let i = lines.length - 1; i >= 0 && !latestPayload; i--) {
+          try {
+            const ev = JSON.parse(lines[i]);
+            if (ev.event && ev.event !== "message") continue;
+            let text = null;
+            if (ev.attachment && ev.attachment.url) {
+              const r = await fetch(ev.attachment.url);
+              if (r.ok) text = await r.text();
+            } else if (ev.message) {
+              text = ev.message;
+            }
+            if (!text) continue;
+            const obj = JSON.parse(text);
+            if (obj && obj.enc) latestPayload = await decryptPayload(obj, secret);
+            else if (obj && obj.syncedAt) latestPayload = obj; // ancien format non chiffré
+          } catch (_) { /* message illisible ou autre code : on passe au précédent */ }
+        }
+
+        if (!latestPayload || !latestPayload.syncedAt) {
+          return setSyncStatus("Aucune situation trouvée pour ce code secret (ou délai expiré). Envoyez d'abord depuis l'autre appareil.", true);
+        }
+
+        const replace = document.getElementById("syncMergeMode").value === "replace";
+        if (replace && !(await confirmDialog("Remplacer TOUTES les données locales (articles, clients, factures, dépenses) par la version reçue ?", "Remplacer"))) {
+          return setSyncStatus("Récupération annulée.");
+        }
+
+        await applyIncomingData(latestPayload, { replace, keepLocalImages: true, syncRoom: secret });
+        await refreshState();
+        setSyncStatus(`Synchronisation réussie ! Données mises à jour depuis la sauvegarde du ${new Date(latestPayload.syncedAt).toLocaleString("fr-FR")}.`);
+      } catch (err) {
+        setSyncStatus("Échec de récupération : " + err.message, true);
+      }
+    }
+
+    async function shareSyncSummary() {
+      const ca = state.sales.reduce((acc, s) => acc + Number(s.total || 0), 0);
+      const collected = state.sales.reduce((acc, s) => acc + Number(s.paidAmount || 0), 0);
+      const credits = state.sales.reduce((acc, s) => acc + Number(s.dueAmount || 0), 0);
+      const text = `Situation ${state.settings.shopName} (${new Date().toLocaleDateString("fr-FR")}) :
+- Chiffre d'affaires : ${money(ca)}
+- Encaissé : ${money(collected)}
+- Dettes clients : ${money(credits)}
+- Nombre de factures : ${state.sales.length}`;
+
+      try {
+        if (navigator.share) {
+          await navigator.share({ title: state.settings.shopName, text });
+        } else {
+          await navigator.clipboard.writeText(text);
+          notify("Résumé copié dans le presse-papiers ! Collez-le dans WhatsApp ou un message.", "ok");
+        }
+      } catch (err) {
+        if (err && err.name !== "AbortError") notify("Impossible de partager le résumé : " + err.message, "err");
+      }
+    }
+
+    async function exportAllData() {
+      const dump = {
+        exportedAt: new Date().toISOString(),
+        settings: state.settings,
+        products: state.products,
+        customers: state.customers,
+        sales: state.sales,
+        expenses: state.expenses
+      };
+      const blob = new Blob([JSON.stringify(dump, null, 2)], { type: "application/json" });
+      const filename = `commercepro-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      try {
+        if (await deliverFile(filename, blob, "Enregistrer la sauvegarde")) notify(IS_NATIVE ? "Choisissez où enregistrer la sauvegarde (Drive, WhatsApp, Fichiers...)." : "Sauvegarde exportée.", "ok");
+      } catch (err) {
+        notify("Échec de l'export : " + err.message, "err");
+      }
+    }
+
+    async function importAllData(ev) {
+      const input = ev.target;
+      const file = input.files[0];
+      if (!file) return;
+      try {
+        const data = JSON.parse(await file.text());
+        if (!data || typeof data !== "object") throw new Error("format inattendu");
+        const lists = await applyIncomingData(data);
+        await refreshState();
+        notify(`Sauvegarde restaurée : ${lists.products.length} article(s), ${lists.customers.length} client(s), ${lists.sales.length} facture(s), ${lists.expenses.length} dépense(s).`, "ok");
+      } catch (err) {
+        notify("Fichier de sauvegarde invalide : " + err.message, "err");
+      } finally {
+        input.value = "";
+      }
+    }
+
+    // ---------- Export PDF / partage (fonctionne hors ligne, sans bibliothèque externe) ----------
+    // window.print() n'existe pas dans l'application Android : on génère un vrai PDF
+    // puis on le partage (WhatsApp, Drive, Imprimer, Enregistrer...) via la feuille de partage Android.
+    const IS_NATIVE = !!(window.Capacitor && typeof window.Capacitor.isNativePlatform === "function" && window.Capacitor.isNativePlatform());
+    let currentReceiptId = null;
+
+    // Largeurs des caractères Helvetica (ASCII 32 à 126, pour 1000 unités)
+    const W_REG = "278 278 355 556 556 889 667 191 333 333 389 584 278 333 278 278 556 556 556 556 556 556 556 556 556 556 278 278 584 584 584 556 1015 667 667 722 722 667 611 778 722 278 500 667 556 833 722 778 667 778 722 667 611 722 667 944 667 667 611 278 278 278 469 556 333 556 556 500 556 556 278 556 556 222 222 500 222 833 556 556 556 556 333 500 278 556 500 722 500 500 500 334 260 334 584".split(" ").map(Number);
+    const W_BOLD = "278 333 474 556 556 889 722 238 333 333 389 584 278 333 278 278 556 556 556 556 556 556 556 556 556 556 333 333 584 584 584 611 975 722 722 722 722 667 611 778 722 278 556 722 611 833 722 778 667 778 722 667 611 722 667 944 667 667 611 333 278 333 584 556 333 556 611 556 611 556 333 611 611 278 278 556 278 889 611 611 611 611 389 556 333 611 556 778 556 556 500 389 280 389 584".split(" ").map(Number);
+    const ACCENT_BASE = "AAAAAAMCEEEEIIIIDNOOOOO+OUUUUYPBaaaaaamceeeeiiiionooooo+ouuuuypy"; // 0xC0 à 0xFF
+    const CP1252 = { "œ": 0x9C, "Œ": 0x8C, "€": 0x80, "’": 0x92, "‘": 0x91, "“": 0x93, "”": 0x94, "–": 0x96, "—": 0x97, "…": 0x85, "•": 0x95 };
+
+    function pdfText(s) {
+      s = String(s ?? "").replace(/[\u202F\u00A0\u2009]/g, " ");
+      let out = "";
+      for (const ch of s) {
+        const c = ch.codePointAt(0);
+        let b = 63;
+        if (CP1252[ch] !== undefined) b = CP1252[ch];
+        else if ((c >= 32 && c <= 126) || (c >= 128 && c <= 255)) b = c; // 128-159 : déjà encodé (cp1252), ne pas altérer
+        out += String.fromCharCode(b);
+      }
+      return out;
+    }
+    function pdfEsc(t) {
+      let o = "";
+      for (let i = 0; i < t.length; i++) {
+        const c = t.charCodeAt(i);
+        if (c === 40 || c === 41 || c === 92) o += "\\" + t[i];
+        else if (c < 32 || c > 126) o += "\\" + c.toString(8).padStart(3, "0");
+        else o += t[i];
+      }
+      return o;
+    }
+    function pdfWidth(t, size, bold) {
+      const W = bold ? W_BOLD : W_REG;
+      let w = 0;
+      for (let i = 0; i < t.length; i++) {
+        const c = t.charCodeAt(i);
+        if (c >= 32 && c <= 126) w += W[c - 32];
+        else if (c >= 0xC0) w += W[ACCENT_BASE.charCodeAt(c - 0xC0) - 32] || 556;
+        else if (c === 0x9C) w += 944;
+        else w += 556;
+      }
+      return (w * size) / 1000;
+    }
+    function pdfWrap(raw, maxW, size, bold) {
+      const t = pdfText(raw);
+      const lines = [];
+      for (const para of t.split("\n")) {
+        let cur = "";
+        for (let word of para.split(" ")) {
+          while (pdfWidth(word, size, bold) > maxW && word.length > 1) { // mot trop long : coupe
+            let k = word.length - 1;
+            while (k > 1 && pdfWidth(word.slice(0, k), size, bold) > maxW) k--;
+            if (cur) { lines.push(cur); cur = ""; }
+            lines.push(word.slice(0, k));
+            word = word.slice(k);
+          }
+          const test = cur ? cur + " " + word : word;
+          if (cur && pdfWidth(test, size, bold) > maxW) { lines.push(cur); cur = word; }
+          else cur = test;
+        }
+        lines.push(cur);
+      }
+      return lines;
+    }
+
+    function buildInvoicePdf(s, cfg, logo) {
+      const PW = 595.28, PH = 841.89, M = 40, CW = PW - 2 * M, BOTTOM = PH - 50;
+      const BLUE = "#1e3a8a", GRID = "#cbd5e1";
+      const pages = [];
+      let ops, y;
+      const col = (h) => [1, 3, 5].map((i) => (parseInt(h.substr(i, 2), 16) / 255).toFixed(3)).join(" ");
+      const newPage = () => { ops = []; pages.push(ops); y = M; };
+      const base = (top, size) => (PH - top - size * 0.85).toFixed(2);
+      const txt = (t, x, top, size, bold, color) => {
+        ops.push(`BT /${bold ? "F2" : "F1"} ${size} Tf ${col(color || "#000000")} rg ${x.toFixed(2)} ${base(top, size)} Td (${pdfEsc(pdfText(t))}) Tj ET`);
+      };
+      const txtR = (t, xr, top, size, bold, color) => txt(t, xr - pdfWidth(pdfText(t), size, bold), top, size, bold, color);
+      const txtC = (t, xc, top, size, bold, color) => txt(t, xc - pdfWidth(pdfText(t), size, bold) / 2, top, size, bold, color);
+      const rect = (x, top, w, h, fill, stroke) => {
+        let op = "";
+        if (fill) op += `${col(fill)} rg `;
+        if (stroke) op += `${col(stroke)} RG 0.6 w `;
+        ops.push(`${op}${x.toFixed(2)} ${(PH - top - h).toFixed(2)} ${w.toFixed(2)} ${h.toFixed(2)} re ${fill && stroke ? "B" : fill ? "f" : "S"}`);
+      };
+      const hline = (top, color, lw) => ops.push(`${col(color)} RG ${lw} w ${M} ${(PH - top).toFixed(2)} m ${(M + CW).toFixed(2)} ${(PH - top).toFixed(2)} l S`);
+      // "Libellé : valeur" avec retrait suspendu ; renvoie le nombre de lignes
+      const labelValue = (label, value, x, top, maxW, size) => {
+        const lw = pdfWidth(pdfText(label + " "), size, true);
+        const lines = pdfWrap(value, maxW - lw, size, false);
+        txt(label, x, top, size, true);
+        lines.forEach((ln, i) => txt(ln, x + lw, top + i * (size + 3), size, false));
+        return lines.length;
+      };
+
+      newPage();
+
+      // ----- En-tête entreprise -----
+      let hx = M, logoH = 0;
+      if (logo) {
+        const r = logo.w / logo.h;
+        const lw = r >= 1 ? 64 : 64 * r, lh = r >= 1 ? 64 / r : 64;
+        ops.push(`q ${lw.toFixed(2)} 0 0 ${lh.toFixed(2)} ${M} ${(PH - y - lh).toFixed(2)} cm /Im1 Do Q`);
+        hx = M + lw + 12; logoH = lh;
+      }
+      const hw = CW - (hx - M);
+      let yy = y;
+      pdfWrap(cfg.shopName || "Samba Sy Logiciels", hw, 15, true).forEach((ln) => { txt(ln, hx, yy, 15, true, BLUE); yy += 18; });
+      if (cfg.tagline) pdfWrap(cfg.tagline, hw, 9, true).forEach((ln) => { txt(ln, hx, yy, 9, true, "#334155"); yy += 12; });
+      [["Propriétaire / Gérant :", cfg.ownerName], ["Adresse :", cfg.address], ["Téléphone :", cfg.phone], ["Email :", cfg.email], ["Réf. fiscale / RC :", cfg.taxId]]
+        .filter(([, v]) => v).forEach(([l, v]) => { yy += labelValue(l, v, hx, yy, hw, 9) * 12; });
+      y = Math.max(yy, y + logoH) + 6;
+      hline(y, BLUE, 1.5);
+      y += 12;
+
+      // ----- Titre -----
+      rect(M, y, CW, 26, "#eff6ff", "#bfdbfe");
+      txtC(String(s.docTitle || "FACTURE DE PAIEMENT").toUpperCase(), PW / 2, y + 7, 14, true, BLUE);
+      y += 38;
+
+      // ----- Cartes d'informations -----
+      const statusLabel = s.paymentStatus || (Number(s.dueAmount) === 0 ? "PAYÉ INTÉGRALEMENT" : (Number(s.paidAmount) > 0 ? "AVANCE VERSÉE" : "RIEN VERSÉ"));
+      const bw = (CW - 12) / 2, pad = 8;
+      const leftItems = [["Document N° :", s.id], ["Date & Heure :", new Date(s.date).toLocaleString("fr-FR")], ["Mode de règlement :", s.paymentMethod]];
+      const rightItems = [["Facturé à :", s.customerName]];
+      if (s.customerPhone) rightItems.push(["Tél. client :", s.customerPhone]);
+      if (s.customerAddress) rightItems.push(["Adresse client :", s.customerAddress]);
+      rightItems.push(["État :", statusLabel]);
+      const countLines = (items) => items.reduce((n, [l, v]) => n + pdfWrap(v, bw - 2 * pad - pdfWidth(pdfText(l + " "), 10, true), 10, false).length, 0);
+      const boxH = Math.max(countLines(leftItems), countLines(rightItems)) * 13 + 2 * pad;
+      rect(M, y, bw, boxH, "#f8fafc", GRID);
+      rect(M + bw + 12, y, bw, boxH, "#f8fafc", GRID);
+      let ly = y + pad, ry = y + pad;
+      leftItems.forEach(([l, v]) => { ly += labelValue(l, v, M + pad, ly, bw - 2 * pad, 10) * 13; });
+      rightItems.forEach(([l, v]) => { ry += labelValue(l, v, M + bw + 12 + pad, ry, bw - 2 * pad, 10) * 13; });
+      y += boxH + 14;
+
+      // ----- Tableau des articles -----
+      const colW = [32, 243, 55, 85, 100];
+      const colX = colW.reduce((a, w, i) => (a.push(i ? a[i - 1] + colW[i - 1] : M), a), []);
+      const tableHead = () => {
+        rect(M, y, CW, 20, BLUE, BLUE);
+        txtC("N°", colX[0] + colW[0] / 2, y + 5, 9.5, true, "#ffffff");
+        txt("Désignation", colX[1] + 6, y + 5, 9.5, true, "#ffffff");
+        txtC("Nombre", colX[2] + colW[2] / 2, y + 5, 9.5, true, "#ffffff");
+        txtR("Prix unitaire", colX[3] + colW[3] - 6, y + 5, 9.5, true, "#ffffff");
+        txtR("Prix total", colX[4] + colW[4] - 6, y + 5, 9.5, true, "#ffffff");
+        y += 20;
+      };
+      tableHead();
+      (s.items || []).forEach((item, idx) => {
+        const name = String(item.name) + (item.unit ? ` (${item.unit})` : "");
+        const lines = pdfWrap(name, colW[1] - 12, 10, false);
+        const rh = Math.max(1, lines.length) * 13 + 10;
+        if (y + rh > BOTTOM) { newPage(); tableHead(); }
+        colW.forEach((w, i) => rect(colX[i], y, w, rh, null, GRID));
+        txtC(String(idx + 1), colX[0] + colW[0] / 2, y + 5, 10, false);
+        lines.forEach((ln, k) => txt(ln, colX[1] + 6, y + 5 + k * 13, 10, k === 0 && false));
+        txtC(String(item.qty), colX[2] + colW[2] / 2, y + 5, 10, false);
+        txtR(money(item.sellPrice), colX[3] + colW[3] - 6, y + 5, 10, false);
+        txtR(money(item.sellPrice * item.qty), colX[4] + colW[4] - 6, y + 5, 10, true);
+        y += rh;
+      });
+      y += 14;
+
+      // ----- Totaux, observation, signatures -----
+      const totalsRows = [];
+      if (Number(s.discount) > 0) {
+        totalsRows.push(["Sous-total brut", money(s.subtotal || (s.total + s.discount)), {}]);
+        totalsRows.push(["Remise accordée", "-" + money(s.discount), {}]);
+      }
+      totalsRows.push(["Total à payer", money(s.total), { hi: true }]);
+      totalsRows.push(["Avance / Montant versé", money(s.paidAmount), { color: "#15803d", bold: true }]);
+      totalsRows.push(["Reste à payer (Dette)", money(s.dueAmount), { color: Number(s.dueAmount) > 0 ? "#b91c1c" : "#0f172a", bold: true }]);
+      if (Number(s.changeDue) > 0) totalsRows.push(["Monnaie rendue", money(s.changeDue), {}]);
+      if (y + totalsRows.length * 20 + 70 > BOTTOM) newPage();
+
+      const tw = 260, tx = M + CW - tw;
+      let ty = y;
+      totalsRows.forEach(([l, v, o]) => {
+        rect(tx, ty, tw, 20, o.hi ? "#eff6ff" : null, GRID);
+        txt(l, tx + 8, ty + 5, o.hi ? 11 : 10, !!o.hi, o.hi ? BLUE : "#000000");
+        txtR(v, tx + tw - 8, ty + 5, o.hi ? 11 : 10, !!(o.hi || o.bold), o.hi ? BLUE : (o.color || "#000000"));
+        ty += 20;
+      });
+      txt("Observation :", M, y, 10, true, "#475569");
+      pdfWrap(Number(s.dueAmount) > 0 ? `Il reste un solde de ${money(s.dueAmount)} à régler sur cette facture.` : "Facture soldée. Merci pour votre confiance !", CW - tw - 20, 10, false)
+        .forEach((ln, k) => txt(ln, M, y + 14 + k * 13, 10, false, "#475569"));
+      y = ty + 36;
+      txt("Signature du Client", M, y, 10, false);
+      txtR("Cachet & Signature de l'Entreprise", M + CW, y, 10, false);
+
+      // numéros de page
+      if (pages.length > 1) pages.forEach((p, i) => {
+        const t = `Page ${i + 1} / ${pages.length}`;
+        p.push(`BT /F1 8 Tf 0.45 0.52 0.60 rg ${(PW / 2 - pdfWidth(t, 8, false) / 2).toFixed(2)} 24 Td (${pdfEsc(t)}) Tj ET`);
+      });
+
+      // ----- Assemblage du fichier PDF -----
+      const chunks = [];
+      let len = 0;
+      const put = (data) => {
+        const u = typeof data === "string" ? Uint8Array.from(data, (c) => c.charCodeAt(0) & 255) : data;
+        chunks.push(u); len += u.length;
+      };
+      const offsets = [];
+      const obj = (id, body) => { offsets[id] = len; put(`${id} 0 obj\n`); put(body); put("\nendobj\n"); };
+      const imgId = logo ? 5 : 0;
+      const firstPage = logo ? 6 : 5;
+      const kids = pages.map((_, i) => `${firstPage + i * 2 + 1} 0 R`).join(" ");
+      put("%PDF-1.4\n%\u00e2\u00e3\u00cf\u00d3\n");
+      obj(1, "<< /Type /Catalog /Pages 2 0 R >>");
+      obj(2, `<< /Type /Pages /Kids [${kids}] /Count ${pages.length} >>`);
+      obj(3, "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>");
+      obj(4, "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>");
+      if (logo) {
+        offsets[5] = len;
+        put(`5 0 obj\n<< /Type /XObject /Subtype /Image /Width ${logo.w} /Height ${logo.h} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${logo.bytes.length} >>\nstream\n`);
+        put(logo.bytes); put("\nendstream\nendobj\n");
+      }
+      pages.forEach((p, i) => {
+        const cid = firstPage + i * 2, pid = cid + 1;
+        const content = p.join("\n");
+        offsets[cid] = len;
+        put(`${cid} 0 obj\n<< /Length ${content.length} >>\nstream\n`); put(content); put("\nendstream\nendobj\n");
+        obj(pid, `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PW} ${PH}] /Resources << /Font << /F1 3 0 R /F2 4 0 R >>${logo ? ` /XObject << /Im1 ${imgId} 0 R >>` : ""} >> /Contents ${cid} 0 R >>`);
+      });
+      const total = firstPage + pages.length * 2;
+      const xrefPos = len;
+      let xref = `xref\n0 ${total}\n0000000000 65535 f \n`;
+      for (let id = 1; id < total; id++) xref += String(offsets[id]).padStart(10, "0") + " 00000 n \n";
+      put(xref + `trailer\n<< /Size ${total} /Root 1 0 R >>\nstartxref\n${xrefPos}\n%%EOF\n`);
+
+      const out = new Uint8Array(len);
+      let pos = 0;
+      chunks.forEach((c) => { out.set(c, pos); pos += c.length; });
+      return out;
+    }
+
+    // Logo -> JPEG RGB (via canvas), ou null si l'image n'est pas lisible
+    function loadLogoJpeg(src) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+          try {
+            let w = img.naturalWidth, h = img.naturalHeight;
+            if (!w || !h) return resolve(null);
+            const k = Math.min(1, 220 / Math.max(w, h));
+            w = Math.round(w * k); h = Math.round(h * k);
+            const c = document.createElement("canvas");
+            c.width = w; c.height = h;
+            const g = c.getContext("2d");
+            g.fillStyle = "#fff"; g.fillRect(0, 0, w, h);
+            g.drawImage(img, 0, 0, w, h);
+            resolve({ bytes: b64ToBytes(c.toDataURL("image/jpeg", 0.85).split(",")[1]), w, h });
+          } catch (_) { resolve(null); }
+        };
+        img.onerror = () => resolve(null);
+        img.src = src;
+      });
+    }
+
+    // Enregistre (PC / navigateur) ou partage (Android) un fichier
+    async function deliverFile(filename, blob, dialogTitle) {
+      if (IS_NATIVE) {
+        const P = window.Capacitor.Plugins || {};
+        if (!P.Filesystem || !P.Share) {
+          notify("Modules Android manquants (Filesystem / Share). Lancez « npm install » puis « npm run cap:sync » et reconstruisez l'APK.", "err");
+          return false;
+        }
+        const dataUrl = await new Promise((res, rej) => {
+          const r = new FileReader();
+          r.onload = () => res(r.result);
+          r.onerror = () => rej(r.error);
+          r.readAsDataURL(blob);
+        });
+        const written = await P.Filesystem.writeFile({ path: filename, data: dataUrl.split(",")[1], directory: "CACHE" });
+        try {
+          await P.Share.share({ title: filename, url: written.uri, dialogTitle: dialogTitle || "Partager" });
+        } catch (err) {
+          if (!/cancel/i.test(String(err && err.message))) throw err;
+        }
+        return true;
+      }
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+      return true;
+    }
+
+    async function exportReceiptPdf() {
+      const s = state.sales.find((x) => x.id === currentReceiptId);
+      if (!s) return;
+      try {
+        const logo = await loadLogoJpeg(state.settings.logoDataUrl || DEFAULT_BRAND_IMG);
+        const bytes = buildInvoicePdf(s, state.settings, logo);
+        const name = String(s.id).replace(/[^\w.-]+/g, "_") + ".pdf";
+        const ok = await deliverFile(name, new Blob([bytes], { type: "application/pdf" }), "Partager ou imprimer la facture");
+        if (ok && !IS_NATIVE) notify("PDF enregistré : " + name, "ok");
+      } catch (err) {
+        notify("Impossible de créer le PDF : " + err.message, "err");
+      }
+    }
+
+    function printReceipt() {
+      if (IS_NATIVE) return exportReceiptPdf();
+      window.print();
+    }
+
+    if (IS_NATIVE) {
+      document.getElementById("btnPrint").style.display = "none";
+      document.getElementById("btnPdfLabel").textContent = "Imprimer / Partager (PDF)";
+    }
+
+    function switchTab(tab) {
+      document.querySelectorAll("main > section").forEach((sec) => { sec.style.display = "none"; });
+      const target = document.getElementById("tab-" + tab);
+      if (target) target.style.display = tab === "pos" ? "grid" : "block";
+      document.querySelectorAll("[data-tab]").forEach((b) => b.classList.toggle("active", b.dataset.tab === tab));
+    }
+
+    document.querySelectorAll("[data-tab]").forEach((btn) => {
+      btn.addEventListener("click", () => switchTab(btn.dataset.tab));
+    });
+
+    document.getElementById("posSearch").addEventListener("input", renderPOSProducts);
+    document.getElementById("posSearch").addEventListener("keydown", (e) => {
+      if (e.key !== "Enter") return;
+      e.preventDefault();
+      const q = e.target.value.trim().toLowerCase();
+      if (!q) return;
+      const exact = state.products.find((p) => (p.sku || "").toLowerCase() === q);
+      const matches = state.products.filter((p) => p.name.toLowerCase().includes(q) || (p.sku || "").toLowerCase().includes(q));
+      const target = exact || (matches.length === 1 ? matches[0] : null);
+      if (target) { addToCart(target.id); e.target.value = ""; renderPOSProducts(); }
+    });
+
+    function syncNetworkBadge() {
+      const el = document.getElementById("netBadgeText");
+      el.textContent = navigator.onLine ? "En ligne" : "Hors ligne";
+    }
+    window.addEventListener("online", syncNetworkBadge);
+    window.addEventListener("offline", syncNetworkBadge);
+
+    if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) {
+      window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(() => {}));
+    }
+
+    openDatabase().then(() => {
+      syncNetworkBadge();
+      refreshState();
+    });
+  </script>
+</body>
+</html>
