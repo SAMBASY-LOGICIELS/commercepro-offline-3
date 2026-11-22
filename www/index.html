@@ -92,34 +92,68 @@
       min-height: calc(100vh - 54px);
     }
     aside {
-      background: var(--card);
-      border-right: 1px solid var(--border);
-      padding: 12px;
+      background: linear-gradient(180deg, #0f172a 0%, #1e1b4b 55%, #312e81 100%);
+      border-right: none;
+      box-shadow: 4px 0 18px rgba(15, 23, 42, 0.25);
+      padding: 14px 12px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 6px;
+    }
+    aside::before {
+      content: "MENU PRINCIPAL";
+      font-size: 10.5px;
+      letter-spacing: 1.6px;
+      font-weight: 700;
+      color: #a5b4fc;
+      padding: 2px 8px 8px;
     }
     .nav-btn {
+      --nav-c: #a5b4fc;
       width: 100%;
       text-align: left;
-      padding: 10px 12px;
+      padding: 11px 12px;
       border: none;
-      background: transparent;
-      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
       font-size: 13.5px;
       font-weight: 500;
       cursor: pointer;
-      color: var(--text);
+      color: #e0e7ff;
       display: flex;
       align-items: center;
-      gap: 10px;
-      transition: background 0.15s, color 0.15s;
+      gap: 11px;
+      transition: background 0.18s, color 0.18s, transform 0.18s, box-shadow 0.18s;
     }
-    .nav-btn.active, .nav-btn:hover {
-      background: var(--primary-soft);
-      color: var(--primary);
-      font-weight: 600;
+    .nav-btn .ico { color: var(--nav-c); width: 19px; height: 19px; }
+    .nav-btn:nth-child(1) { --nav-c: #34d399; }
+    .nav-btn:nth-child(2) { --nav-c: #38bdf8; }
+    .nav-btn:nth-child(3) { --nav-c: #c4b5fd; }
+    .nav-btn:nth-child(4) { --nav-c: #fbbf24; }
+    .nav-btn:nth-child(5) { --nav-c: #22d3ee; }
+    .nav-btn:nth-child(6) { --nav-c: #fb7185; }
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.13);
+      color: #ffffff;
+      transform: translateX(3px);
     }
+    .nav-btn.active {
+      background: linear-gradient(90deg, #facc15, #fb923c);
+      color: #1e1b4b;
+      font-weight: 700;
+      box-shadow: 0 6px 16px rgba(251, 146, 60, 0.45);
+    }
+    .nav-btn.active .ico { color: #1e1b4b; }
+
+    /* Section protégée (identité) */
+    .admin-bar {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+      padding: 9px 12px; margin: 0 0 12px 0; border-radius: 8px; font-size: 13px; font-weight: 600;
+      background: #fef2f2; border: 1px solid #fecaca; color: #991b1b;
+    }
+    .admin-bar.open { background: #f0fdf4; border-color: #bbf7d0; color: #166534; }
+    #identityCard input:disabled { background: #f1f5f9; color: #64748b; cursor: not-allowed; }
+    #identityCard.locked .media-box { opacity: .55; pointer-events: none; }
 
     main { padding: 14px 16px; max-width: 1340px; width: 100%; }
 
@@ -364,8 +398,8 @@
       display: none;
       position: fixed;
       bottom: 0; left: 0; right: 0;
-      background: var(--card);
-      border-top: 1px solid var(--border);
+      background: linear-gradient(90deg, #0f172a, #312e81);
+      border-top: 2px solid #facc15;
       justify-content: space-around;
       padding: 6px 0;
       z-index: 30;
@@ -373,16 +407,17 @@
     .bottom-nav button {
       background: none;
       border: none;
-      font-size: 11px;
-      color: var(--muted);
+      font-size: 10.5px;
+      color: #c7d2fe;
       cursor: pointer;
       padding: 4px 5px;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 3px;
+      border-radius: 8px;
     }
-    .bottom-nav button.active { color: var(--primary); font-weight: 700; }
+    .bottom-nav button.active { color: #1e1b4b; font-weight: 700; background: linear-gradient(135deg, #facc15, #fb923c); }
 
     /* Modale Facture / Reçu */
     #receiptModal {
@@ -901,11 +936,15 @@
 
       <!-- 6. PARAMÈTRES, IDENTITÉ VISUELLE & SYNCHRONISATION -->
       <section id="tab-settings" style="display:none;">
-        <div class="card">
+        <div class="card locked" id="identityCard">
           <h3 class="section-title">
             <svg class="ico ico-lg" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
             Identité de l'entreprise & du propriétaire (Accueil & Factures)
           </h3>
+          <div class="admin-bar" id="adminBar">
+            <span id="adminBarText">Section protégée : seul l'administrateur peut modifier l'identité, le logo et la photo.</span>
+            <button class="btn-sm" id="adminToggleBtn" type="button" onclick="toggleAdminLock()">Déverrouiller</button>
+          </div>
           <div class="form-grid">
             <div class="field-group">
               <label>Nom de l'entreprise / Boutique *</label>
@@ -1068,6 +1107,10 @@
       <svg class="ico" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
       Clients
     </button>
+    <button data-tab="expenses">
+      <svg class="ico" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      Dépenses
+    </button>
     <button data-tab="history">
       <svg class="ico" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
       Factures
@@ -1082,7 +1125,7 @@
   <div id="dlgOverlay" class="no-print" role="dialog" aria-modal="true">
     <div id="dlgBox">
       <p id="dlgMsg"></p>
-      <input id="dlgInput" type="number" min="0" step="any" style="display:none;" />
+      <input id="dlgInput" type="number" min="0" step="any" autocomplete="off" style="display:none;" />
       <div id="dlgBtns">
         <button class="btn-sm" id="dlgCancel" type="button" style="padding:9px 14px;">Annuler</button>
         <button class="btn" id="dlgOk" type="button">OK</button>
@@ -1216,11 +1259,12 @@
 
     // Dialogues internes : prompt() n'existe pas dans Electron, confirm() y est fragile
     let dlgResolve = null;
-    function openDialog(message, withInput, defaultValue, okLabel) {
+    function openDialog(message, withInput, defaultValue, okLabel, inputType) {
       return new Promise((resolve) => {
         dlgResolve = resolve;
         document.getElementById("dlgMsg").textContent = message;
         const input = document.getElementById("dlgInput");
+        input.type = inputType || "number";
         input.style.display = withInput ? "block" : "none";
         input.value = withInput ? (defaultValue ?? "") : "";
         document.getElementById("dlgOk").textContent = okLabel || "OK";
@@ -1230,14 +1274,17 @@
     }
     function closeDialog(result) {
       document.getElementById("dlgOverlay").style.display = "none";
+      document.getElementById("dlgInput").value = "";
       if (dlgResolve) { const r = dlgResolve; dlgResolve = null; r(result); }
     }
     function confirmDialog(message, okLabel) { return openDialog(message, false, null, okLabel || "Confirmer"); }
     function askNumber(message, defaultValue) { return openDialog(message, true, defaultValue, "Valider"); }
+    function askSecret(message) { return openDialog(message, true, "", "Déverrouiller", "password"); }
     document.getElementById("dlgCancel").addEventListener("click", () => closeDialog(null));
     document.getElementById("dlgOk").addEventListener("click", () => {
       const input = document.getElementById("dlgInput");
-      closeDialog(input.style.display === "none" ? true : input.value);
+      const value = input.style.display === "none" ? true : input.value;
+      closeDialog(value);
     });
     document.addEventListener("keydown", (e) => {
       if (document.getElementById("dlgOverlay").style.display !== "flex") return;
@@ -1308,8 +1355,65 @@
       document.getElementById("previewOwner").src = ownerSrc;
     }
 
+    // ---------- Verrou administrateur (identité de l'entreprise) ----------
+    const ADMIN_HASH = "a60a09026e3b85ee44c1a2fba509c6438e996fb2c0a335995b6c6dfe004e3b6f";
+    const IDENTITY_IDS = ["cfgShopName", "cfgOwnerName", "cfgTagline", "cfgPhone", "cfgAddress", "cfgEmail", "cfgTaxId"];
+    const IDENTITY_KEYS = ["shopName", "ownerName", "tagline", "phone", "address", "email", "taxId", "logoDataUrl", "ownerPhotoDataUrl"];
+    let adminUnlocked = false;
+    let adminFails = 0;
+    let adminBlockedUntil = 0;
+
+    async function adminHash(code) {
+      const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(String(code).trim()), "PBKDF2", false, ["deriveBits"]);
+      const bits = await crypto.subtle.deriveBits(
+        { name: "PBKDF2", salt: new TextEncoder().encode("commercepro-admin-v1"), iterations: 200000, hash: "SHA-256" },
+        base, 256
+      );
+      return Array.from(new Uint8Array(bits)).map((b) => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    function applyAdminLockUI() {
+      IDENTITY_IDS.forEach((id) => { document.getElementById(id).disabled = !adminUnlocked; });
+      document.getElementById("identityCard").classList.toggle("locked", !adminUnlocked);
+      const bar = document.getElementById("adminBar");
+      bar.classList.toggle("open", adminUnlocked);
+      document.getElementById("adminBarText").textContent = adminUnlocked
+        ? "Mode administrateur actif : vous pouvez modifier l'identité, le logo et la photo."
+        : "Section protégée : seul l'administrateur peut modifier l'identité, le logo et la photo.";
+      document.getElementById("adminToggleBtn").textContent = adminUnlocked ? "Verrouiller" : "Déverrouiller";
+    }
+
+    function lockAdmin() { adminUnlocked = false; applyAdminLockUI(); }
+
+    async function unlockAdmin() {
+      const wait = adminBlockedUntil - Date.now();
+      if (wait > 0) return notify(`Trop d'essais. Réessayez dans ${Math.ceil(wait / 1000)} secondes.`, "err");
+      const code = await askSecret("Saisissez le code administrateur :");
+      if (code === null) return false;
+      let ok = false;
+      try { ok = (await adminHash(code)) === ADMIN_HASH; }
+      catch (_) { notify("Vérification impossible sur cet appareil.", "err"); return false; }
+      if (ok) {
+        adminFails = 0;
+        adminUnlocked = true;
+        applyAdminLockUI();
+        notify("Mode administrateur activé.", "ok");
+        return true;
+      }
+      adminFails++;
+      if (adminFails >= 5) { adminBlockedUntil = Date.now() + 60000; adminFails = 0; }
+      notify("Code incorrect.", "err");
+      return false;
+    }
+
+    async function toggleAdminLock() {
+      if (adminUnlocked) { lockAdmin(); notify("Section verrouillée."); }
+      else await unlockAdmin();
+    }
+
     function handleImageUpload(event, fieldKey) {
       const file = event.target.files[0];
+      if (!adminUnlocked) { event.target.value = ""; return notify("Section protégée : déverrouillez avec le code administrateur.", "err"); }
       if (!file) return;
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -1340,14 +1444,13 @@
     }
 
     function resetDefaultImage(fieldKey) {
+      if (!adminUnlocked) return notify("Section protégée : déverrouillez avec le code administrateur.", "err");
       state.settings[fieldKey] = DEFAULT_BRAND_IMG;
       refreshImages();
     }
 
     async function saveSettings() {
-      state.settings = {
-        ...state.settings,
-        id: "config",
+      const identity = adminUnlocked ? {
         shopName: document.getElementById("cfgShopName").value.trim() || "Samba Sy Logiciels",
         ownerName: document.getElementById("cfgOwnerName").value.trim(),
         tagline: document.getElementById("cfgTagline").value.trim(),
@@ -1355,13 +1458,20 @@
         address: document.getElementById("cfgAddress").value.trim(),
         email: document.getElementById("cfgEmail").value.trim(),
         taxId: document.getElementById("cfgTaxId").value.trim(),
+        identityConfigured: true
+      } : {};
+      state.settings = {
+        ...state.settings,
+        id: "config",
+        ...identity,
         currency: document.getElementById("cfgCurrency").value.trim() || "FCFA",
         mode: document.getElementById("cfgMode").value,
         syncRoom: document.getElementById("cfgSyncRoom").value.trim()
       };
       await dbPut("settings", state.settings);
       await refreshState();
-      notify("Paramètres, logo et photo enregistrés avec succès.", "ok");
+      notify(adminUnlocked ? "Paramètres, identité, logo et photo enregistrés." : "Paramètres enregistrés (l'identité reste protégée).", "ok");
+      lockAdmin();
     }
 
     function renderKPIs() {
@@ -1995,16 +2105,23 @@
         sales: cleanList(data.sales, "sales"),
         expenses: cleanList(data.expenses, "expenses")
       };
+      let identitySkipped = false;
       if (replace) for (const st of Object.keys(lists)) await dbClear(st);
       if (data.settings && typeof data.settings === "object") {
         const incoming = { ...data.settings };
+        // Identité protégée : reprise seulement si déverrouillé, ou si jamais configurée sur cet appareil (réinstallation)
+        if (!adminUnlocked && state.settings.identityConfigured) {
+          identitySkipped = IDENTITY_KEYS.some((k) => incoming[k] !== undefined && incoming[k] !== state.settings[k]);
+          IDENTITY_KEYS.forEach((k) => delete incoming[k]);
+          delete incoming.identityConfigured;
+        }
         if (keepLocalImages) { delete incoming.logoDataUrl; delete incoming.ownerPhotoDataUrl; }
         const merged = { ...state.settings, ...incoming, id: "config" };
         if (syncRoom !== null) merged.syncRoom = syncRoom;
         await dbPut("settings", merged);
       }
       for (const st of Object.keys(lists)) for (const rec of lists[st]) await dbPut(st, rec);
-      return lists;
+      return { ...lists, identitySkipped };
     }
 
     // ---------- Synchronisation chiffrée (AES-256-GCM, clé dérivée du code secret) ----------
@@ -2199,7 +2316,7 @@
         if (!data || typeof data !== "object") throw new Error("format inattendu");
         const lists = await applyIncomingData(data);
         await refreshState();
-        notify(`Sauvegarde restaurée : ${lists.products.length} article(s), ${lists.customers.length} client(s), ${lists.sales.length} facture(s), ${lists.expenses.length} dépense(s).`, "ok");
+        notify(`Sauvegarde restaurée : ${lists.products.length} article(s), ${lists.customers.length} client(s), ${lists.sales.length} facture(s), ${lists.expenses.length} dépense(s).` + (lists.identitySkipped ? " L'identité de l'entreprise n'a pas été modifiée (protégée par le code administrateur)." : ""), "ok");
       } catch (err) {
         notify("Fichier de sauvegarde invalide : " + err.message, "err");
       } finally {
@@ -2529,12 +2646,14 @@
     }
 
     function switchTab(tab) {
+      if (adminUnlocked && tab !== "settings") lockAdmin();
       document.querySelectorAll("main > section").forEach((sec) => { sec.style.display = "none"; });
       const target = document.getElementById("tab-" + tab);
       if (target) target.style.display = tab === "pos" ? "grid" : "block";
       document.querySelectorAll("[data-tab]").forEach((b) => b.classList.toggle("active", b.dataset.tab === tab));
     }
 
+    applyAdminLockUI();
     document.querySelectorAll("[data-tab]").forEach((btn) => {
       btn.addEventListener("click", () => switchTab(btn.dataset.tab));
     });

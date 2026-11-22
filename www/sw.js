@@ -1,6 +1,6 @@
 // Service worker (version Android / navigateur). Inutile dans l'.exe (file://).
 // IMPORTANT : changer CACHE_NAME à chaque nouvelle version pour forcer la mise à jour.
-const CACHE_NAME = "commerce-pro-v4-2";
+const CACHE_NAME = "commerce-pro-v4-3";
 const CORE_FILES = [
   "./",
   "./index.html",
